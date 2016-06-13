@@ -1,0 +1,46 @@
+{
+  "name": "pull-length-prefixed",
+  "version": "1.0.0",
+  "description": "Streaming length prefixed buffers with pull-streams",
+  "main": "lib/index.js",
+  "jsnext:main": "src/index.js",
+  "scripts": {
+    "test": "aegir-test",
+    "test:browser": "aegir-test browser",
+    "test:node": "aegir-test node",
+    "lint": "aegir-lint",
+    "release": "aegir-release",
+    "release-minor": "aegir-release --type minor",
+    "release-major": "aegir-release --type major",
+    "build": "aegir-build",
+    "coverage": "aegir-coverage",
+    "coverage-publish": "aegir-coverage publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dignifiedquire/pull-length-prefixed.git"
+  },
+  "keywords": [
+    "varint",
+    "pull-stream",
+    "length-prefixed-stream",
+    "length-prefixed"
+  ],
+  "author": "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dignifiedquire/pull-length-prefixed/issues"
+  },
+  "homepage": "https://github.com/dignifiedquire/pull-length-prefixed#readme",
+  "dependencies": {
+    "pull-reader": "^1.2.5",
+    "safe-buffer": "^5.0.1",
+    "varint": "^4.0.0"
+  },
+  "devDependencies": {
+    "aegir": "^3.2.0",
+    "chai": "^3.5.0",
+    "pull-pushable": "^2.0.0",
+    "pull-stream": "^3.4.2"
+  }
+}
