@@ -10,3 +10,40 @@
 
 
 > Streaming length prefixed buffers with pull-streams
+
+
+
+## Install
+
+```bash
+$ npm install --save pull-length-prefixed
+```
+
+## Usage
+
+```js
+var pull = require('pull-stream')
+var lp = require('pull-length-prefixed')
+
+// encode
+pull(
+  pull.values([Buffer.from('hello world')]),
+  lp.encode(),
+  pull.collect(function (err, encode) {
+    if (err) throw err
+    console.log(encoded)
+    // => [Buffer <0b 68 65 6c 6c 6f 20 77 6f 72 6c 64>]
+  })
+)
+
+// decode
+pull(
+  pull.values(encoded), // e.g. from above
+  lp.decode(),
+  pull.collect(function (err, decoded) {
+    if (err) throw err
+    console.log(decoded)
+    // => [Buffer <68 65 6c 6c 6f 20 77 6f 72 6c 64>]
+  })
+)
+```
