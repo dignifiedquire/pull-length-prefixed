@@ -7,13 +7,18 @@
 [![Travis CI](https://travis-ci.org/dignifiedquire/pull-length-prefixed.svg?branch=master)](https://travis-ci.org/dignifiedquire/pull-length-prefixed)
 [![Circle CI](https://circleci.com/gh/dignifiedquire/pull-length-prefixed.svg?style=svg)](https://circleci.com/gh/dignifiedquire/pull-length-prefixed)
 [![Dependency Status](https://david-dm.org/dignifiedquire/pull-length-prefixed.svg?style=flat-square)](https://david-dm.org/dignifiedquire/pull-length-prefixed) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
-
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 > Streaming length prefixed buffers with pull-streams
 
+## Table of Contents
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contribute](#contribute)
+- [License](#license)
 
-## Install
+## Installation
 
 ```bash
 $ npm install --save pull-length-prefixed
@@ -47,3 +52,11 @@ pull(
   })
 )
 ```
+
+## Contribute
+
+PRs and issues gladly accepted! Check out the [issues](//github.com/dignifiedquire/pull-length-prefixed/issues).
+
+## License
+
+MIT © 2016 Friedel Ziegelmayer
