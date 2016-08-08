@@ -33,14 +33,14 @@
   },
   "homepage": "https://github.com/dignifiedquire/pull-length-prefixed#readme",
   "dependencies": {
-    "pull-reader": "^1.2.5",
+    "pull-reader": "^1.2.8",
     "safe-buffer": "^5.0.1",
-    "varint": "^4.0.0"
+    "varint": "^4.0.1"
   },
   "devDependencies": {
-    "aegir": "^3.2.0",
+    "aegir": "^6.0.0",
     "chai": "^3.5.0",
-    "pull-pushable": "^2.0.0",
-    "pull-stream": "^3.4.2"
+    "pull-pushable": "^2.0.1",
+    "pull-stream": "^3.4.3"
   }
 }
