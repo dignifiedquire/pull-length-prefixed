@@ -5,6 +5,7 @@ const pull = require('pull-stream')
 const Pushable = require('pull-pushable')
 const expect = require('chai').expect
 const varint = require('varint')
+const block = require('pull-block')
 
 const lp = require('../src')
 
@@ -87,4 +88,93 @@ describe('pull-length-prefixed', () => {
       })
     )
   })
+
+  const sizes = [1, 2, 4, 6, 10, 100, 1000]
+
+  sizes.forEach((size) => {
+    it(`split packages to blocks: ${size}`, (done) => {
+      const longBuffer = new Buffer(size * 10)
+      longBuffer.fill('a')
+
+      const input = [
+        new Buffer('hello '),
+        new Buffer('world'),
+        longBuffer
+      ]
+
+      pull(
+        pull.values(input),
+        lp.encode(),
+        block(size, {nopad: true}),
+        lp.decode(),
+        pull.collect((err, res) => {
+          if (err) throw err
+
+          expect(
+            res
+          ).to.be.eql([
+            new Buffer('hello '),
+            new Buffer('world'),
+            longBuffer
+          ])
+          done()
+        })
+      )
+    })
+  })
+
+  describe('back pressure', () => {
+    let input = []
+
+    before(() => {
+      for (let j = 0; j < 200; j++) {
+        const a = []
+        for (let i = 0; i < 200; i++) {
+          a[i] = String(i)
+        }
+
+        input.push(new Buffer(a.join('')))
+      }
+    })
+
+    it('encode - slow in - fast out', (done) => {
+      pull(
+        pull.values(input),
+        delay(10),
+        lp.encode(),
+        lp.decode(),
+        pull.collect((err, res) => {
+          if (err) throw err
+
+          expect(res).to.be.eql(input)
+
+          done()
+        })
+      )
+    })
+
+    it('decode - slow in - fast out', (done) => {
+      pull(
+        pull.values(input),
+        lp.encode(),
+        delay(10),
+        lp.decode(),
+        pull.collect((err, res) => {
+          if (err) throw err
+
+          expect(res).to.be.eql(input)
+
+          done()
+        })
+      )
+    })
+  })
 })
+
+function delay (time) {
+  return pull.asyncMap((val, cb) => {
+    setTimeout(() => {
+      cb(null, val)
+    }, time)
+  })
+}

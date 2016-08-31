@@ -3,6 +3,7 @@
 const varint = require('varint')
 const Reader = require('pull-reader')
 const Buffer = require('safe-buffer').Buffer
+const pushable = require('pull-pushable')
 
 exports.decode = decode
 exports.decodeFromReader = decodeFromReader
@@ -11,22 +12,24 @@ const MSB = 0x80
 const isEndByte = (byte) => !(byte & MSB)
 
 function decode () {
-  let ended = false
   let reader = new Reader()
+  let p = pushable((err) => {
+    reader.abort(err)
+  })
 
-  return (read) => (end, cb) => {
+  return (read) => {
     reader(read)
-    if (end) return reader.abort(end, cb)
-    if (ended) return cb(ended)
+    function next () {
+      decodeFromReader(reader, (err, msg) => {
+        if (err) return p.end(err)
 
-    decodeFromReader(reader, (err, msg) => {
-      if (err) {
-        ended = err
-        return cb(ended)
-      }
+        p.push(msg)
+        next()
+      })
+    }
 
-      cb(null, msg)
-    })
+    next()
+    return p
   }
 }
 
@@ -42,6 +45,7 @@ function decodeFromReader (reader, cb) {
       }
 
       rawMsgSize.push(byte)
+
       if (byte && !isEndByte(byte[0])) {
         readByte()
       } else {
@@ -58,6 +62,7 @@ function decodeFromReader (reader, cb) {
       }
 
       rawMsgSize = []
+
       cb(null, msg)
     })
   }

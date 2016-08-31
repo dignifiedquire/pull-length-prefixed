@@ -12,19 +12,16 @@ function encode () {
   let ended = false
 
   return (read) => (end, cb) => {
+    if (end) ended = end
     if (ended) return cb(ended)
 
     read(null, (end, data) => {
-      if (end) {
-        ended = end
-        cb(ended)
-        return
-      }
+      if (end) ended = end
+      if (ended) return cb(ended)
 
       if (!Buffer.isBuffer(data)) {
         ended = new Error('data must be a buffer')
-        cb(ended)
-        return
+        return cb(ended)
       }
 
       varint.encode(data.length, pool, used)
