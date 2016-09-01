@@ -1,7 +1,8 @@
 'use strict'
 
 const encode = require('./encode')
-const decode = require('./decode')
+const d = require('./decode')
 
 exports.encode = encode
-exports.decode = decode
+exports.decode = d.decode
+exports.decodeFromReader = d.decodeFromReader
