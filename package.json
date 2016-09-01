@@ -43,5 +43,9 @@
     "chai": "^3.5.0",
     "pull-block": "^1.0.1",
     "pull-stream": "^3.4.3"
-  }
+  },
+  "contributors": [
+    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+    "Richard Littauer <richard.littauer@gmail.com>"
+  ]
 }
