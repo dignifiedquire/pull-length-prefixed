@@ -53,6 +53,31 @@ pull(
 )
 ```
 
+## API
+
+### `encode([opts])`
+
+- `opts: Object`, optional
+  - `fixed: false`:
+  - `bytes: 4`: If `fixed` is `true` this is the amount of bytes used for the prefix.
+
+By default all messages will be prefixed with a varint. If you want to use a fixed length prefix you can specify this through the `opts`.
+
+Returns a pull-stream through.
+
+### `decode([opts])`
+
+- `opts: Object`, optional
+  - `fixed: false`:
+  - `bytes: 4`: If `fixed` is `true` this is the amount of bytes used for the prefix.
+
+By default all messages will be prefixed with a varint. If you want to use a fixed length prefix you can specify this through the `opts`.
+
+
+Returns a pull-stream through.
+
+### `decodeFromReader(reader, [opts], cb)`
+
 ## Contribute
 
 PRs and issues gladly accepted! Check out the [issues](//github.com/dignifiedquire/pull-length-prefixed/issues).

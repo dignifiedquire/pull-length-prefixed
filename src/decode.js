@@ -11,7 +11,7 @@ exports.decodeFromReader = decodeFromReader
 const MSB = 0x80
 const isEndByte = (byte) => !(byte & MSB)
 
-function decode () {
+function decode (opts) {
   let reader = new Reader()
   let p = pushable((err) => {
     reader.abort(err)
@@ -20,7 +20,7 @@ function decode () {
   return (read) => {
     reader(read)
     function next () {
-      decodeFromReader(reader, (err, msg) => {
+      decodeFromReader(reader, opts, (err, msg) => {
         if (err) return p.end(err)
 
         p.push(msg)
@@ -33,7 +33,36 @@ function decode () {
   }
 }
 
-function decodeFromReader (reader, cb) {
+function decodeFromReader (reader, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
+
+  opts = Object.assign({
+    fixed: false,
+    bytes: 4
+  }, opts || {})
+
+  if (opts.fixed) {
+    readFixedMessage(reader, opts.bytes, cb)
+  } else {
+    readVarintMessage(reader, cb)
+  }
+}
+
+function readFixedMessage (reader, byteLength, cb) {
+  reader.read(byteLength, (err, bytes) => {
+    if (err) {
+      return cb(err)
+    }
+
+    const msgSize = bytes.readInt32BE(0)
+    readMessage(reader, msgSize, cb)
+  })
+}
+
+function readVarintMessage (reader, cb) {
   let rawMsgSize = []
   if (rawMsgSize.length === 0) readByte()
 
@@ -48,22 +77,29 @@ function decodeFromReader (reader, cb) {
 
       if (byte && !isEndByte(byte[0])) {
         readByte()
-      } else {
-        readMessage()
-      }
-    })
-  }
-
-  function readMessage () {
-    const msgSize = varint.decode(Buffer.concat(rawMsgSize))
-    reader.read(msgSize, (err, msg) => {
-      if (err) {
-        return cb(err)
+        return
       }
 
-      rawMsgSize = []
+      const msgSize = varint.decode(Buffer.concat(rawMsgSize))
+      readMessage(reader, msgSize, (err, msg) => {
+        if (err) {
+          return cb(err)
+        }
 
-      cb(null, msg)
+        rawMsgSize = []
+
+        cb(null, msg)
+      })
     })
   }
+}
+
+function readMessage (reader, size, cb) {
+  reader.read(size, (err, msg) => {
+    if (err) {
+      return cb(err)
+    }
+
+    cb(null, msg)
+  })
 }
