@@ -78,6 +78,13 @@ Returns a pull-stream through.
 
 ### `decodeFromReader(reader, [opts], cb)`
 
+- `reader: [pull-reader](https://github.com/dominictarr/pull-reader)`
+- `opts: Object`, optional. Same as for `decode`.
+- `cb: Function`: Callback called with `(err, message)`.
+
+This uses a [pull-reader](https://github.com/dominictarr/pull-reader) instance to reade and decode a single message. Useful when using [pull-handshake](https://github.com/pull-stream/pull-handshake) with length prefixed messages.
+
+
 ## Contribute
 
 PRs and issues gladly accepted! Check out the [issues](//github.com/dignifiedquire/pull-length-prefixed/issues).
