@@ -9,8 +9,8 @@ const block = require('pull-block')
 
 const lp = require('../src')
 
-describe('pull-length-prefixed decode', () => {
-  it('decodeFromReader', (done) => {
+describe('pull-length-prefixed decodeFromReader', () => {
+  it('basic', (done) => {
 
     const input = [
       new Buffer('haay wuurl!')
@@ -38,7 +38,7 @@ describe('pull-length-prefixed decode', () => {
 
   })
 
-  it('decodeFromReader - empty input', (done) => {
+  it('empty input', (done) => {
 
     const input = []
 
@@ -55,6 +55,7 @@ describe('pull-length-prefixed decode', () => {
     lp.decodeFromReader(reader, function(err, output){
       expect(err).to.exist
       expect(err).to.be.instanceof(Error)
+      expect(output).to.not.exist
       done()
     })
 
