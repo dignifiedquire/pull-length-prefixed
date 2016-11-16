@@ -53,6 +53,9 @@ function decodeFromReader (reader, opts, cb) {
 
 function readFixedMessage (reader, byteLength, cb) {
   reader.read(byteLength, (err, bytes) => {
+    if (err === true) {
+      return cb(new Error('Unexpected end of stream.'))
+    }
     if (err) {
       return cb(err)
     }
@@ -69,6 +72,9 @@ function readVarintMessage (reader, cb) {
   // 1. Read the varint
   function readByte () {
     reader.read(1, (err, byte) => {
+      if (err === true) {
+        return cb(new Error('Unexpected end of stream.'))
+      }
       if (err) {
         return cb(err)
       }
