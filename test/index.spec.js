@@ -89,7 +89,7 @@ describe('pull-length-prefixed', () => {
     )
   })
 
-  it('invalid prefix', (done) => {
+  it.skip('invalid prefix', (done) => {
     const input = [
       new Buffer('br34k mai h34rt'),
     ]
