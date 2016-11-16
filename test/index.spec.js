@@ -135,7 +135,7 @@ describe('pull-length-prefixed', () => {
 
   it.skip('invalid prefix', (done) => {
     const input = [
-      new Buffer('br34k mai h34rt'),
+      new Buffer('br34k mai h34rt')
     ]
 
     pull(
@@ -143,7 +143,7 @@ describe('pull-length-prefixed', () => {
       pull.values(input),
       lp.encode(),
       // corrupt data
-      pull.map(data => data.slice(0,-6)),
+      pull.map(data => data.slice(0, -6)),
       // attempt decode
       lp.decode(),
       pull.collect((err, output) => {
