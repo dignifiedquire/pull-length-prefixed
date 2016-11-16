@@ -39,7 +39,7 @@
     "varint": "^4.0.1"
   },
   "devDependencies": {
-    "aegir": "^6.0.0",
+    "aegir": "^9.1.2",
     "chai": "^3.5.0",
     "pull-block": "^1.0.1",
     "pull-stream": "^3.4.3"
