@@ -99,6 +99,9 @@ function readVarintMessage (reader, cb) {
 
         rawMsgSize = []
 
+        if (msg.length < msgSize) {
+          return cb (new Error('Message length does not match prefix specified length.'))
+        }
         cb(null, msg)
       })
     })
