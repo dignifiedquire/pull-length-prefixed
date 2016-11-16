@@ -4,20 +4,17 @@
 const pull = require('pull-stream')
 const Reader = require('pull-reader')
 const expect = require('chai').expect
-const varint = require('varint')
-const block = require('pull-block')
 
 const lp = require('../src')
 
 describe('pull-length-prefixed decodeFromReader', () => {
   it('basic', (done) => {
-
     const input = [
       new Buffer('haay wuurl!')
     ]
 
     const reader = Reader(1e3)
-    
+
     // length-prefix encode input
     pull(
       pull.values(input),
@@ -26,7 +23,7 @@ describe('pull-length-prefixed decodeFromReader', () => {
     )
 
     // decode from reader
-    lp.decodeFromReader(reader, function(err, output){
+    lp.decodeFromReader(reader, function (err, output) {
       if (err) throw err
       expect(
         output
@@ -35,15 +32,13 @@ describe('pull-length-prefixed decodeFromReader', () => {
       )
       done()
     })
-
   })
 
   it('empty input', (done) => {
-
     const input = []
 
     const reader = Reader(1e3)
-    
+
     // length-prefix encode input
     pull(
       pull.values(input),
@@ -52,12 +47,11 @@ describe('pull-length-prefixed decodeFromReader', () => {
     )
 
     // decode from reader
-    lp.decodeFromReader(reader, function(err, output){
+    lp.decodeFromReader(reader, function (err, output) {
       expect(err).to.exist
       expect(err).to.be.instanceof(Error)
       expect(output).to.not.exist
       done()
     })
-
   })
 })

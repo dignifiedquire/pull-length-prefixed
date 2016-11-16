@@ -40,7 +40,7 @@ function decodeFromReader (reader, opts, cb) {
     opts = {}
   }
 
-  _decodeFromReader(reader, opts, function onComplete(err, msg){
+  _decodeFromReader(reader, opts, function onComplete (err, msg) {
     if (err) {
       if (err === true) return cb(new Error('Unexpected end of input from reader.'))
       return cb(err)
@@ -100,7 +100,7 @@ function readVarintMessage (reader, cb) {
         rawMsgSize = []
 
         if (msg.length < msgSize) {
-          return cb (new Error('Message length does not match prefix specified length.'))
+          return cb(new Error('Message length does not match prefix specified length.'))
         }
         cb(null, msg)
       })
