@@ -48,4 +48,45 @@ describe('pull-length-prefixed', () => {
       })
     )
   })
+
+  it('max length', (done) => {
+    const input = [
+      new Buffer('hello '),
+      new Buffer('world')
+    ]
+
+    pull(
+      pull.values(input),
+      lp.encode({fixed: true}),
+      pull.collect((err, encoded) => {
+        if (err) throw err
+
+        expect(
+          encoded
+        ).to.be.eql([
+          Buffer.concat([
+            new Buffer('00000006', 'hex'),
+            new Buffer('hello ')
+          ]),
+          Buffer.concat([
+            new Buffer('00000005', 'hex'),
+            new Buffer('world')
+          ])
+        ])
+
+        pull(
+          pull.values(encoded),
+          lp.decode({fixed: true, maxLength: 1}),
+          pull.collect((err, output) => {
+            expect(
+              err
+            ).to.be.eql(
+              'size longer than max permitted length of 1!'
+            )
+            done()
+          })
+        )
+      })
+    )
+  })
 })

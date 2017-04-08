@@ -52,6 +52,47 @@ describe('pull-length-prefixed', () => {
     )
   })
 
+  it('max length', (done) => {
+    const input = [
+      new Buffer('hello '),
+      new Buffer('world')
+    ]
+
+    pull(
+      pull.values(input),
+      lp.encode(),
+      pull.collect((err, encoded) => {
+        if (err) throw err
+
+        expect(
+          encoded
+        ).to.be.eql([
+          Buffer.concat([
+            new Buffer(varint.encode('hello '.length)),
+            new Buffer('hello ')
+          ]),
+          Buffer.concat([
+            new Buffer(varint.encode('world'.length)),
+            new Buffer('world')
+          ])
+        ])
+
+        pull(
+          pull.values(encoded),
+          lp.decode({maxLength: 1}),
+          pull.collect((err, output) => {
+            expect(
+              err
+            ).to.be.eql(
+              'size longer than max permitted length of 1!'
+            )
+            done()
+          })
+        )
+      })
+    )
+  })
+
   it('push time based', (done) => {
     const p = new Pushable()
     const input = []
