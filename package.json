@@ -1,6 +1,6 @@
 {
   "name": "pull-length-prefixed",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Streaming length prefixed buffers with pull-streams",
   "main": "src/index.js",
   "scripts": {
