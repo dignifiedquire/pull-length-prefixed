@@ -2,8 +2,7 @@
   "name": "pull-length-prefixed",
   "version": "1.2.0",
   "description": "Streaming length prefixed buffers with pull-streams",
-  "main": "lib/index.js",
-  "jsnext:main": "src/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "aegir-test",
     "test:browser": "aegir-test browser",
@@ -34,15 +33,15 @@
   "homepage": "https://github.com/dignifiedquire/pull-length-prefixed#readme",
   "dependencies": {
     "pull-pushable": "^2.0.1",
-    "pull-reader": "^1.2.8",
+    "pull-reader": "^1.2.9",
     "safe-buffer": "^5.0.1",
-    "varint": "^4.0.1"
+    "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^6.0.0",
+    "aegir": "^11.0.1",
     "chai": "^3.5.0",
-    "pull-block": "^1.0.1",
-    "pull-stream": "^3.4.3"
+    "pull-block": "^1.2.0",
+    "pull-stream": "^3.5.0"
   },
   "contributors": [
     "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
