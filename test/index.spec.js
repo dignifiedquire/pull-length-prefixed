@@ -14,8 +14,8 @@ const lp = require('../src')
 describe('pull-length-prefixed', () => {
   it('basics', (done) => {
     const input = [
-      Buffer.from('hello '),
-      Buffer.from('world')
+      new Buffer('hello '),
+      new Buffer('world')
     ]
 
     pull(
@@ -30,12 +30,12 @@ describe('pull-length-prefixed', () => {
           encoded
         ).to.be.eql([
           Buffer.concat([
-            Buffer.alloc(helloLen.length, helloLen),
-            Buffer.alloc('hello '.length, 'hello ')
+            Buffer.alloc(helloLen.length, helloLen, 'utf8'),
+            Buffer.alloc('hello '.length, 'hello ', 'utf8')
           ]),
           Buffer.concat([
-            Buffer.alloc(worldLen.length, worldLen),
-            Buffer.alloc('world'.length, 'world')
+            Buffer.alloc(worldLen.length, worldLen, 'utf8'),
+            Buffer.alloc('world'.length, 'world', 'utf8')
           ])
         ])
         pull(
@@ -73,12 +73,12 @@ describe('pull-length-prefixed', () => {
           encoded
         ).to.be.eql([
           Buffer.concat([
-            Buffer.alloc(helloLen.length, helloLen),
-            Buffer.alloc('hello '.length, 'hello ')
+            Buffer.alloc(helloLen.length, helloLen, 'utf8'),
+            Buffer.alloc('hello '.length, 'hello ', 'utf8')
           ]),
           Buffer.concat([
-            Buffer.alloc(worldLen.length, worldLen),
-            Buffer.alloc('world'.length, 'world')
+            Buffer.alloc(worldLen.length, worldLen, 'utf8'),
+            Buffer.alloc('world'.length, 'world', 'utf8')
           ])
         ])
 
