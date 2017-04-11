@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 'use strict'
 
+const Buffer = require('safe-buffer').Buffer
+
 const pull = require('pull-stream')
 const Pushable = require('pull-pushable')
 const expect = require('chai').expect
@@ -12,8 +14,8 @@ const lp = require('../src')
 describe('pull-length-prefixed', () => {
   it('basics', (done) => {
     const input = [
-      new Buffer('hello '),
-      new Buffer('world')
+      Buffer.from('hello '),
+      Buffer.from('world')
     ]
 
     pull(
@@ -22,19 +24,20 @@ describe('pull-length-prefixed', () => {
       pull.collect((err, encoded) => {
         if (err) throw err
 
+        const helloLen = varint.encode('hello '.length)
+        const worldLen = varint.encode('world'.length)
         expect(
           encoded
         ).to.be.eql([
           Buffer.concat([
-            new Buffer(varint.encode('hello '.length)),
-            new Buffer('hello ')
+            Buffer.alloc(helloLen.length, helloLen),
+            Buffer.alloc('hello '.length, 'hello ')
           ]),
           Buffer.concat([
-            new Buffer(varint.encode('world'.length)),
-            new Buffer('world')
+            Buffer.alloc(worldLen.length, worldLen),
+            Buffer.alloc('world'.length, 'world')
           ])
         ])
-
         pull(
           pull.values(encoded),
           lp.decode(),
@@ -54,8 +57,8 @@ describe('pull-length-prefixed', () => {
 
   it('max length', (done) => {
     const input = [
-      new Buffer('hello '),
-      new Buffer('world')
+      Buffer.from('hello '),
+      Buffer.from('world')
     ]
 
     pull(
@@ -64,16 +67,18 @@ describe('pull-length-prefixed', () => {
       pull.collect((err, encoded) => {
         if (err) throw err
 
+        const helloLen = varint.encode('hello '.length)
+        const worldLen = varint.encode('world'.length)
         expect(
           encoded
         ).to.be.eql([
           Buffer.concat([
-            new Buffer(varint.encode('hello '.length)),
-            new Buffer('hello ')
+            Buffer.alloc(helloLen.length, helloLen),
+            Buffer.alloc('hello '.length, 'hello ')
           ]),
           Buffer.concat([
-            new Buffer(varint.encode('world'.length)),
-            new Buffer('world')
+            Buffer.alloc(worldLen.length, worldLen),
+            Buffer.alloc('world'.length, 'world')
           ])
         ])
 
@@ -101,7 +106,7 @@ describe('pull-length-prefixed', () => {
     push()
     function push () {
       setTimeout(() => {
-        const val = new Buffer(`hello ${i}`)
+        const val = Buffer.from(`hello ${i}`)
         p.push(val)
         input.push(val)
         i++
@@ -134,12 +139,12 @@ describe('pull-length-prefixed', () => {
 
   sizes.forEach((size) => {
     it(`split packages to blocks: ${size}`, (done) => {
-      const longBuffer = new Buffer(size * 10)
+      const longBuffer = Buffer.alloc(size * 10)
       longBuffer.fill('a')
 
       const input = [
-        new Buffer('hello '),
-        new Buffer('world'),
+        Buffer.from('hello '),
+        Buffer.from('world'),
         longBuffer
       ]
 
@@ -154,8 +159,8 @@ describe('pull-length-prefixed', () => {
           expect(
             res
           ).to.be.eql([
-            new Buffer('hello '),
-            new Buffer('world'),
+            Buffer.from('hello '),
+            Buffer.from('world'),
             longBuffer
           ])
           done()
@@ -174,7 +179,7 @@ describe('pull-length-prefixed', () => {
           a[i] = String(i)
         }
 
-        input.push(new Buffer(a.join('')))
+        input.push(Buffer.from(a.join('')))
       }
     })
 
