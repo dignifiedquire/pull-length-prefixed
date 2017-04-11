@@ -10,7 +10,7 @@ exports.decodeFromReader = decodeFromReader
 
 const MSB = 0x80
 const isEndByte = (byte) => !(byte & MSB)
-const MAX_LENGTH = 1024
+const MAX_LENGTH = ((1024 * 1024) * 4)
 
 function decode (opts) {
   let reader = new Reader()
