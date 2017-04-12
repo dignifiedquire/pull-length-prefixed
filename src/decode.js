@@ -10,6 +10,7 @@ exports.decodeFromReader = decodeFromReader
 
 const MSB = 0x80
 const isEndByte = (byte) => !(byte & MSB)
+const MAX_LENGTH = ((1024 * 1024) * 4)
 
 function decode (opts) {
   let reader = new Reader()
@@ -45,24 +46,38 @@ function decodeFromReader (reader, opts, cb) {
   }, opts || {})
 
   if (opts.fixed) {
-    readFixedMessage(reader, opts.bytes, cb)
+    readFixedMessage(reader, opts.bytes, opts.maxLength, cb)
   } else {
-    readVarintMessage(reader, cb)
+    readVarintMessage(reader, opts.maxLength, cb)
   }
 }
 
-function readFixedMessage (reader, byteLength, cb) {
+function readFixedMessage (reader, byteLength, maxLength, cb) {
+  if (typeof maxLength === 'function') {
+    cb = maxLength
+    maxLength = MAX_LENGTH
+  }
+
   reader.read(byteLength, (err, bytes) => {
     if (err) {
       return cb(err)
     }
 
     const msgSize = bytes.readInt32BE(0)
+    if (msgSize > maxLength) {
+      return cb('size longer than max permitted length of ' + maxLength + '!')
+    }
+
     readMessage(reader, msgSize, cb)
   })
 }
 
-function readVarintMessage (reader, cb) {
+function readVarintMessage (reader, maxLength, cb) {
+  if (typeof maxLength === 'function') {
+    cb = maxLength
+    maxLength = MAX_LENGTH
+  }
+
   let rawMsgSize = []
   if (rawMsgSize.length === 0) readByte()
 
@@ -81,6 +96,9 @@ function readVarintMessage (reader, cb) {
       }
 
       const msgSize = varint.decode(Buffer.concat(rawMsgSize))
+      if (msgSize > maxLength) {
+        return cb('size longer than max permitted length of ' + maxLength + '!')
+      }
       readMessage(reader, msgSize, (err, msg) => {
         if (err) {
           return cb(err)
