@@ -32,7 +32,6 @@
   },
   "homepage": "https://github.com/dignifiedquire/pull-length-prefixed#readme",
   "dependencies": {
-    "mocha": "^3.2.0",
     "pull-pushable": "^2.0.1",
     "pull-reader": "^1.2.9",
     "safe-buffer": "^5.0.1",
