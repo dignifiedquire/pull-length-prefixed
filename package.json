@@ -44,7 +44,8 @@
     "pull-stream": "^3.5.0"
   },
   "contributors": [
-    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
-    "Richard Littauer <richard.littauer@gmail.com>"
+    "Dmitriy Ryajov <dryajov@gmail.com>",
+    "Richard Littauer <richard.littauer@gmail.com>",
+    "dignifiedquire <dignifiedquire@gmail.com>"
   ]
 }
