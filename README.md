@@ -58,8 +58,7 @@ pull(
 ### `encode([opts])`
 
 - `opts: Object`, optional
-  - `fixed: false`:
-  - `bytes: 4`: If `fixed` is `true` this is the amount of bytes used for the prefix.
+  - `fixed: false`: If true uses a fixed 4 byte Int32BE prefix instead of varint
 
 By default all messages will be prefixed with a varint. If you want to use a fixed length prefix you can specify this through the `opts`.
 
@@ -68,8 +67,7 @@ Returns a pull-stream through.
 ### `decode([opts])`
 
 - `opts: Object`, optional
-  - `fixed: false`:
-  - `bytes: 4`: If `fixed` is `true` this is the amount of bytes used for the prefix.
+  - `fixed: false`: If true uses a fixed 4 byte Int32BE prefix instead of varint
   - `maxLength`: If provided, will not decode messages longer than the size specified, if omitted will use the current default of 4MB.
 
 By default all messages will be prefixed with a varint. If you want to use a fixed length prefix you can specify this through the `opts`.
