@@ -8,8 +8,7 @@ const poolSize = 10 * 1024
 
 function encode (opts) {
   opts = Object.assign({
-    fixed: false,
-    bytes: 4
+    fixed: false
   }, opts || {})
 
   // Only needed for varint
@@ -34,8 +33,8 @@ function encode (opts) {
 
       let encodedLength
       if (opts.fixed) {
-        encodedLength = Buffer.alloc(opts.bytes)
-        encodedLength.writeInt32BE(data.length, 0)
+        encodedLength = Buffer.alloc(4)
+        encodedLength.writeInt32BE(data.length, 0) // writes exactly 4 bytes
       } else {
         varint.encode(data.length, pool, used)
         used += varint.encode.bytes
