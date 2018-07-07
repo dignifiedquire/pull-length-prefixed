@@ -41,7 +41,8 @@ function decodeFromReader (reader, opts, cb) {
   }
 
   opts = Object.assign({
-    fixed: false
+    fixed: false,
+    maxLength: MAX_LENGTH
   }, opts || {})
 
   if (opts.fixed) {
@@ -52,11 +53,6 @@ function decodeFromReader (reader, opts, cb) {
 }
 
 function readFixedMessage (reader, maxLength, cb) {
-  if (typeof maxLength === 'function') {
-    cb = maxLength
-    maxLength = MAX_LENGTH
-  }
-
   reader.read(4, (err, bytes) => {
     if (err) {
       return cb(err)
@@ -64,7 +60,7 @@ function readFixedMessage (reader, maxLength, cb) {
 
     const msgSize = bytes.readInt32BE(0) // reads exactly 4 bytes
     if (msgSize > maxLength) {
-      return cb('size longer than max permitted length of ' + maxLength + '!')
+      return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
     }
 
     readMessage(reader, msgSize, cb)
@@ -72,11 +68,6 @@ function readFixedMessage (reader, maxLength, cb) {
 }
 
 function readVarintMessage (reader, maxLength, cb) {
-  if (typeof maxLength === 'function') {
-    cb = maxLength
-    maxLength = MAX_LENGTH
-  }
-
   let rawMsgSize = []
   if (rawMsgSize.length === 0) readByte()
 
@@ -96,7 +87,7 @@ function readVarintMessage (reader, maxLength, cb) {
 
       const msgSize = varint.decode(Buffer.concat(rawMsgSize))
       if (msgSize > maxLength) {
-        return cb('size longer than max permitted length of ' + maxLength + '!')
+        return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
       }
       readMessage(reader, msgSize, (err, msg) => {
         if (err) {

@@ -82,12 +82,10 @@ describe('pull-length-prefixed', () => {
         pull(
           pull.values(encoded),
           lp.decode({fixed: true, maxLength: 1}),
-          pull.collect((err, output) => {
-            expect(
-              err
-            ).to.be.eql(
-              'size longer than max permitted length of 1!'
-            )
+          pull.collect((err) => {
+            expect(err).to.include({
+              message: 'size longer than max permitted length of 1!'
+            })
             done()
           })
         )
