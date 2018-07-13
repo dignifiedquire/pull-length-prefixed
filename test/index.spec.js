@@ -133,7 +133,7 @@ describe('pull-length-prefixed', () => {
     )
   })
 
-  it.skip('invalid prefix', (done) => {
+  it('invalid prefix', (done) => {
     const input = [
       new Buffer('br34k mai h34rt')
     ]
@@ -147,9 +147,8 @@ describe('pull-length-prefixed', () => {
       // attempt decode
       lp.decode(),
       pull.collect((err, output) => {
-        expect(err).to.exist
         expect(err).to.be.instanceof(Error)
-        expect(output).to.not.exist
+        expect(output).to.deep.equal([])
         done()
       })
     )
