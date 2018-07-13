@@ -133,6 +133,27 @@ describe('pull-length-prefixed', () => {
     )
   })
 
+  it('invalid prefix', (done) => {
+    const input = [
+      new Buffer('br34k mai h34rt')
+    ]
+
+    pull(
+      // encode valid input
+      pull.values(input),
+      lp.encode(),
+      // corrupt data
+      pull.map(data => data.slice(0, -6)),
+      // attempt decode
+      lp.decode(),
+      pull.collect((err, output) => {
+        expect(err).to.be.instanceof(Error)
+        expect(output).to.deep.equal([])
+        done()
+      })
+    )
+  })
+
   const sizes = [1, 2, 4, 6, 10, 100, 1000]
 
   sizes.forEach((size) => {

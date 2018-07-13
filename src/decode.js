@@ -21,7 +21,7 @@ function decode (opts) {
   return (read) => {
     reader(read)
     function next () {
-      decodeFromReader(reader, opts, (err, msg) => {
+      _decodeFromReader(reader, opts, (err, msg) => {
         if (err) return p.end(err)
 
         p.push(msg)
@@ -34,12 +34,23 @@ function decode (opts) {
   }
 }
 
+// wrapper to detect sudden pull-stream disconnects
 function decodeFromReader (reader, opts, cb) {
   if (typeof opts === 'function') {
     cb = opts
     opts = {}
   }
 
+  _decodeFromReader(reader, opts, function onComplete (err, msg) {
+    if (err) {
+      if (err === true) return cb(new Error('Unexpected end of input from reader.'))
+      return cb(err)
+    }
+    cb(null, msg)
+  })
+}
+
+function _decodeFromReader (reader, opts, cb) {
   opts = Object.assign({
     fixed: false,
     maxLength: MAX_LENGTH
@@ -96,6 +107,9 @@ function readVarintMessage (reader, maxLength, cb) {
 
         rawMsgSize = []
 
+        if (msg.length < msgSize) {
+          return cb(new Error('Message length does not match prefix specified length.'))
+        }
         cb(null, msg)
       })
     })
