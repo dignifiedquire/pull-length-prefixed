@@ -34,7 +34,7 @@ var lp = require('pull-length-prefixed')
 pull(
   pull.values([Buffer.from('hello world')]),
   lp.encode(),
-  pull.collect(function (err, encode) {
+  pull.collect(function (err, encoded) {
     if (err) throw err
     console.log(encoded)
     // => [Buffer <0b 68 65 6c 6c 6f 20 77 6f 72 6c 64>]
