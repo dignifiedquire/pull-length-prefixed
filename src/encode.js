@@ -16,7 +16,7 @@ function encode (opts) {
   let pool = opts.fixed ? null : createPool()
   let used = 0
 
-  let ended = false
+  let ended = false, first = true
 
   return (read) => (end, cb) => {
     if (end) ended = end
@@ -24,7 +24,14 @@ function encode (opts) {
 
     read(null, (end, data) => {
       if (end) ended = end
-      if (ended) return cb(ended)
+      if (ended) {
+        if (first) {
+          data = Buffer.alloc(0)
+        } else {
+          return cb(ended)
+        }
+      }
+      first = false
 
       if (!Buffer.isBuffer(data)) {
         ended = new Error('data must be a buffer')
@@ -45,7 +52,7 @@ function encode (opts) {
           used = 0
         }
       }
-
+      
       cb(null, Buffer.concat([
         encodedLength,
         data
