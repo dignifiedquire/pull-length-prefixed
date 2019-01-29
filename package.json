@@ -38,10 +38,10 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^11.0.1",
-    "chai": "^4.1.2",
+    "aegir": "^18.0.3",
+    "chai": "^4.2.0",
     "pull-block": "^1.2.0",
-    "pull-stream": "^3.5.0"
+    "pull-stream": "^3.6.9"
   },
   "contributors": [
     "Dmitriy Ryajov <dryajov@gmail.com>",
