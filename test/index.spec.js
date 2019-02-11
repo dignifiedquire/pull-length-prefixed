@@ -96,6 +96,35 @@ describe('pull-length-prefixed', () => {
     )
   })
 
+  it('zero length', (done) => {
+    pull(
+      pull.values(),
+      lp.encode(),
+      pull.collect((err, encoded) => {
+        if (err) throw err
+
+        expect(
+          encoded
+        ).to.be.eql([Buffer.alloc(1, 0)])
+
+        pull(
+          pull.values(),
+          lp.encode(),
+          lp.decode(),
+          pull.collect((err, decoded) => {
+            if (err) throw err
+
+            expect(
+              decoded
+            ).to.be.eql([])
+
+            done()
+          })
+        )
+      })
+    )
+  })
+
   it('push time based', (done) => {
     const p = new Pushable()
     const input = []
