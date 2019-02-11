@@ -100,22 +100,24 @@ function readVarintMessage (reader, maxLength, cb) {
       if (msgSize > maxLength) {
         return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
       }
-      if (msgSize > 0) {
-        readMessage(reader, msgSize, (err, msg) => {
-          if (err) {
-            return cb(err)
-          }
-  
-          rawMsgSize = []
-  
-          if (msg.length < msgSize) {
-            return cb(new Error('Message length does not match prefix specified length.'))
-          }
-          cb(null, msg)
-        })
-      } else {
-        cb(true)
+
+      if (msgSize <= 0) {
+        return cb(true)
       }
+
+      readMessage(reader, msgSize, (err, msg) => {
+        if (err) {
+          return cb(err)
+        }
+
+        rawMsgSize = []
+
+        if (msg.length < msgSize) {
+          return cb(new Error('Message length does not match prefix specified length.'))
+        }
+        cb(null, msg)
+      })
+
     })
   }
 }
