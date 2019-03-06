@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10-browsers
+        environment:
+          NO_SANDBOX: true
+    steps:
+      - checkout
+      - run:
+          command: npm ci
+      - run:
+          command: npm run lint
+      - run:
+          command: npm run test
