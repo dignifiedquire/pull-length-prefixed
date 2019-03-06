@@ -18,7 +18,7 @@ describe('pull-length-prefixed', () => {
 
     pull(
       pull.values(input),
-      lp.encode({fixed: true, bytes: bytes}),
+      lp.encode({ fixed: true, bytes: bytes }),
       pull.collect((err, encoded) => {
         if (err) throw err
 
@@ -37,7 +37,7 @@ describe('pull-length-prefixed', () => {
 
         pull(
           pull.values(encoded),
-          lp.decode({fixed: true, bytes: bytes}),
+          lp.decode({ fixed: true, bytes: bytes }),
           pull.collect((err, output) => {
             if (err) throw err
             expect(
@@ -62,7 +62,7 @@ describe('pull-length-prefixed', () => {
 
     pull(
       pull.values(input),
-      lp.encode({fixed: true, bytes: bytes}),
+      lp.encode({ fixed: true, bytes: bytes }),
       pull.collect((err, encoded) => {
         if (err) throw err
 
@@ -81,7 +81,7 @@ describe('pull-length-prefixed', () => {
 
         pull(
           pull.values(encoded),
-          lp.decode({fixed: true, maxLength: 1}),
+          lp.decode({ fixed: true, maxLength: 1 }),
           pull.collect((err) => {
             expect(err).to.include({
               message: 'size longer than max permitted length of 1!'
