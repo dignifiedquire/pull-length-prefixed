@@ -10,7 +10,7 @@ const lp = require('../src')
 describe('pull-length-prefixed decodeFromReader', () => {
   it('basic', (done) => {
     const input = [
-      new Buffer('haay wuurl!')
+      Buffer.from('haay wuurl!')
     ]
 
     const reader = Reader(1e3)

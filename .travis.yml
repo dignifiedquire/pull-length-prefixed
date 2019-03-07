@@ -1,11 +1,10 @@
 sudo: false
 language: node_js
 node_js:
-  - 6
   - 8
   - stable
 
-# Make sure we have new NPM.
+# Make sure we have new NPM and yarn
 before_install:
   - npm install -g npm
 

@@ -84,7 +84,7 @@ describe('pull-length-prefixed', () => {
 
         pull(
           pull.values(encoded),
-          lp.decode({maxLength: 1}),
+          lp.decode({ maxLength: 1 }),
           pull.collect((err) => {
             expect(err).to.include({
               message: 'size longer than max permitted length of 1!'
@@ -135,7 +135,7 @@ describe('pull-length-prefixed', () => {
 
   it('invalid prefix', (done) => {
     const input = [
-      new Buffer('br34k mai h34rt')
+      Buffer.from('br34k mai h34rt')
     ]
 
     pull(
@@ -170,7 +170,7 @@ describe('pull-length-prefixed', () => {
       pull(
         pull.values(input),
         lp.encode(),
-        block(size, {nopad: true}),
+        block(size, { nopad: true }),
         lp.decode(),
         pull.collect((err, res) => {
           if (err) throw err
