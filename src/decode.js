@@ -22,7 +22,7 @@ function decode (opts) {
     reader(read)
 
     // this function has to be written without recursion
-    // or it blow the stack in case of sync stream
+    // or it blows the stack in case of sync stream
     function next () {
       let doNext = true
       let decoded = false
