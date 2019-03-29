@@ -16,7 +16,8 @@ function encode (opts) {
   let pool = opts.fixed ? null : createPool()
   let used = 0
 
-  let ended = false, first = true
+  let ended = false
+  let first = true
 
   return (read) => (end, cb) => {
     if (end) ended = end
@@ -64,6 +65,6 @@ function encode (opts) {
   }
 }
 
-function createPool() {
+function createPool () {
   return Buffer.alloc(poolSize)
 }

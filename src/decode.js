@@ -123,7 +123,7 @@ function readVarintMessage (reader, maxLength, cb) {
       }
 
       if (msgSize <= 0) {
-        return cb(true)
+        return cb(true) // eslint-disable-line standard/no-callback-literal
       }
 
       readMessage(reader, msgSize, (err, msg) => {
@@ -138,7 +138,6 @@ function readVarintMessage (reader, maxLength, cb) {
         }
         cb(null, msg)
       })
-
     })
   }
 }
