@@ -20,16 +20,37 @@ function decode (opts) {
 
   return (read) => {
     reader(read)
-    function next () {
-      _decodeFromReader(reader, opts, (err, msg) => {
-        if (err) return p.end(err)
 
-        p.push(msg)
-        next()
-      })
+    // this function has to be written without recursion
+    // or it blows the stack in case of sync stream
+    function next () {
+      let doNext = true
+      let decoded = false
+
+      const decodeCb = (err, msg) => {
+        decoded = true
+        if (err) {
+          p.end(err)
+          doNext = false
+        } else {
+          p.push(msg)
+          if (!doNext) {
+            next()
+          }
+        }
+      }
+
+      while (doNext) {
+        decoded = false
+        _decodeFromReader(reader, opts, decodeCb)
+        if (!decoded) {
+          doNext = false
+        }
+      }
     }
 
     next()
+
     return p
   }
 }
@@ -100,6 +121,11 @@ function readVarintMessage (reader, maxLength, cb) {
       if (msgSize > maxLength) {
         return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
       }
+
+      if (msgSize <= 0) {
+        return cb(true) // eslint-disable-line standard/no-callback-literal
+      }
+
       readMessage(reader, msgSize, (err, msg) => {
         if (err) {
           return cb(err)
