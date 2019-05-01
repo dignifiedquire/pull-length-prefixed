@@ -122,10 +122,6 @@ function readVarintMessage (reader, maxLength, cb) {
         return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
       }
 
-      if (msgSize <= 0) {
-        return cb(true) // eslint-disable-line standard/no-callback-literal
-      }
-
       readMessage(reader, msgSize, (err, msg) => {
         if (err) {
           return cb(err)
