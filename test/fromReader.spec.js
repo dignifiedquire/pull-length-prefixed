@@ -48,8 +48,9 @@ describe('pull-length-prefixed decodeFromReader', () => {
 
     // decode from reader
     lp.decodeFromReader(reader, function (err, output) {
-      expect(output).to.eql(Buffer.alloc(0))
-      done(err)
+      expect(err).to.be.instanceof(Error)
+      expect(output).to.equal(undefined)
+      done()
     })
   })
 })

@@ -17,7 +17,6 @@ function encode (opts) {
   let used = 0
 
   let ended = false
-  let first = true
 
   return (read) => (end, cb) => {
     if (end) ended = end
@@ -25,11 +24,7 @@ function encode (opts) {
 
     read(null, (end, data) => {
       if (end) ended = end
-      if (ended && !first) {
-        return cb(ended)
-      }
-
-      first = false
+      if (ended) return cb(ended)
 
       if (!ended && !Buffer.isBuffer(data)) {
         ended = new Error('data must be a buffer')
