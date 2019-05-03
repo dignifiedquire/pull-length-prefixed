@@ -101,14 +101,14 @@ describe('pull-length-prefixed', () => {
       pull.values(),
       lp.encode(),
       pull.collect((err, encoded) => {
-        if (err) throw err
-
-        expect(
-          encoded
-        ).to.be.eql([Buffer.alloc(1, 0)])
+        expect(err).to.eql(null)
+        expect(encoded).to.eql([])
 
         pull(
-          pull.values(),
+          pull.values([
+            Buffer.alloc(0),
+            Buffer.from('more data')
+          ]),
           lp.encode(),
           lp.decode(),
           pull.collect((err, decoded) => {
@@ -116,7 +116,10 @@ describe('pull-length-prefixed', () => {
 
             expect(
               decoded
-            ).to.be.eql([])
+            ).to.be.eql([
+              Buffer.alloc(0),
+              Buffer.from('more data')
+            ])
 
             done()
           })
