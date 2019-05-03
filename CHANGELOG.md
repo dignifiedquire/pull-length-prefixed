@@ -1,3 +1,14 @@
+<a name="1.3.3"></a>
+## [1.3.3](https://github.com/dignifiedquire/pull-length-prefixed/compare/v1.3.2...v1.3.3) (2019-05-03)
+
+
+### Bug Fixes
+
+* correct encode behavior ([a6177e1](https://github.com/dignifiedquire/pull-length-prefixed/commit/a6177e1))
+* empty responses shouldnt end streams ([87ae256](https://github.com/dignifiedquire/pull-length-prefixed/commit/87ae256))
+
+
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://github.com/dignifiedquire/pull-length-prefixed/compare/v1.3.1...v1.3.2) (2019-04-04)
 
