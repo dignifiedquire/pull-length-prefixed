@@ -1,70 +1,35 @@
 'use strict'
 
-const Buffer = require('safe-buffer').Buffer
+const Varint = require('varint')
+const BufferList = require('bl')
+
+const MIN_POOL_SIZE = 147 // Varint.encode(Number.MAX_VALUE).length
+const DEFAULT_POOL_SIZE = 10 * 1024
+
+function encode (options) {
+  options = options || {}
+  options.poolSize = Math.max(options.poolSize || DEFAULT_POOL_SIZE, MIN_POOL_SIZE)
+
+  return source => (async function * () {
+    let pool = Buffer.alloc(options.poolSize)
+    let poolOffset = 0
+
+    for await (const chunk of source) {
+      Varint.encode(chunk.length, pool, poolOffset)
+      poolOffset += Varint.encode.bytes
+      const encodedLength = pool.slice(poolOffset - Varint.encode.bytes, poolOffset)
+
+      if (pool.length - poolOffset < MIN_POOL_SIZE) {
+        pool = Buffer.alloc(options.poolSize)
+        poolOffset = 0
+      }
+
+      yield new BufferList().append(encodedLength).append(chunk)
+      // yield Buffer.concat([encodedLength, chunk])
+    }
+  })()
+}
 
 module.exports = encode
-
-const poolSize = 10 * 1024
-
-function encode (opts) {
-  opts = Object.assign({
-    fixed: false
-  }, opts || {})
-
-  // Only needed for varint
-  const varint = require('varint')
-  let pool = opts.fixed ? null : createPool()
-  let used = 0
-
-  let ended = false
-  let first = true
-
-  return (read) => (end, cb) => {
-    if (end) ended = end
-    if (ended) return cb(ended)
-
-    read(null, (end, data) => {
-      if (end) ended = end
-      if (ended && !first) {
-        return cb(ended)
-      }
-
-      first = false
-
-      if (!ended && !Buffer.isBuffer(data)) {
-        ended = new Error('data must be a buffer')
-        return cb(ended)
-      }
-
-      const dataLength = ended ? 0 : data.length
-
-      let encodedLength
-      if (opts.fixed) {
-        encodedLength = Buffer.alloc(4)
-        encodedLength.writeInt32BE(dataLength, 0) // writes exactly 4 bytes
-      } else {
-        varint.encode(dataLength, pool, used)
-        used += varint.encode.bytes
-        encodedLength = pool.slice(used - varint.encode.bytes, used)
-
-        if (pool.length - used < 100) {
-          pool = createPool()
-          used = 0
-        }
-      }
-
-      if (ended) {
-        return cb(null, encodedLength)
-      }
-
-      cb(null, Buffer.concat([
-        encodedLength,
-        data
-      ], (opts.fixed ? 4 : varint.encode.bytes) + dataLength))
-    })
-  }
-}
-
-function createPool () {
-  return Buffer.alloc(poolSize)
-}
+module.exports.MIN_POOL_SIZE = MIN_POOL_SIZE
+module.exports.DEFAULT_POOL_SIZE = DEFAULT_POOL_SIZE
