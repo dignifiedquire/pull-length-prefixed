@@ -1,153 +1,91 @@
 'use strict'
 
-const varint = require('varint')
-const Reader = require('pull-reader')
-const Buffer = require('safe-buffer').Buffer
-const pushable = require('pull-pushable')
-
-exports.decode = decode
-exports.decodeFromReader = decodeFromReader
+const BufferList = require('bl')
+const Varint = require('varint')
 
 const MSB = 0x80
-const isEndByte = (byte) => !(byte & MSB)
-const MAX_LENGTH = ((1024 * 1024) * 4)
+const isEndByte = byte => !(byte & MSB)
+const MAX_DATA_LENGTH = 1024 * 1024 * 4
 
-function decode (opts) {
-  let reader = new Reader()
-  let p = pushable((err) => {
-    reader.abort(err)
-  })
+const toBufferProxy = bl => new Proxy({}, {
+  get: (_, prop) => prop[0] === 'l' ? bl[prop] : bl.get(prop)
+})
 
-  return (read) => {
-    reader(read)
+const Empty = Buffer.alloc(0)
 
-    // this function has to be written without recursion
-    // or it blows the stack in case of sync stream
-    function next () {
-      let doNext = true
-      let decoded = false
+const ReadModes = { LENGTH: 'readLength', DATA: 'readData' }
 
-      const decodeCb = (err, msg) => {
-        decoded = true
-        if (err) {
-          p.end(err)
-          doNext = false
-        } else {
-          p.push(msg)
-          if (!doNext) {
-            next()
-          }
-        }
-      }
+const ReadHandlers = {
+  [ReadModes.LENGTH]: (chunk, buffer, state, options) => {
+    let endByteIndex = -1
 
-      while (doNext) {
-        decoded = false
-        _decodeFromReader(reader, opts, decodeCb)
-        if (!decoded) {
-          doNext = false
-        }
+    for (let i = 0; i < chunk.length; i++) {
+      // Get byte from BufferList or Buffer
+      const byte = chunk.get ? chunk.get(i) : chunk[i]
+
+      if (isEndByte(byte)) {
+        endByteIndex = i
+        break
       }
     }
 
-    next()
+    if (endByteIndex === -1) {
+      return { mode: ReadModes.LENGTH, buffer: buffer.append(chunk) }
+    }
 
-    return p
+    endByteIndex = buffer.length + endByteIndex
+    buffer = buffer.append(chunk)
+
+    const dataLength = Varint.decode(toBufferProxy(buffer.shallowSlice(0, endByteIndex)))
+
+    if (dataLength > options.maxDataLength) {
+      throw Object.assign(new Error('message too long'), { code: 'ERR_MSG_TOO_LONG' })
+    }
+
+    chunk = buffer.shallowSlice(endByteIndex)
+    buffer = new BufferList()
+
+    if (dataLength <= 0) {
+      return { mode: ReadModes.LENGTH, chunk, buffer, value: new BufferList(Empty) }
+    }
+
+    return { mode: ReadModes.DATA, chunk, buffer, state: { dataLength } }
+  },
+
+  [ReadModes.DATA]: (chunk, buffer, state, options) => {
+    buffer = buffer.append(chunk)
+
+    if (buffer.length < state.dataLength) {
+      return { mode: ReadModes.DATA, buffer, state }
+    }
+
+    const value = buffer.shallowSlice(0, state.dataLength)
+
+    chunk = buffer.shallowSlice(state.dataLength)
+    buffer = new BufferList()
+
+    return { mode: ReadModes.LENGTH, chunk, buffer, value }
   }
 }
 
-// wrapper to detect sudden pull-stream disconnects
-function decodeFromReader (reader, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts
-    opts = {}
-  }
+function decode (options) {
+  options = options || {}
+  options.maxDataLength = options.maxDataLength || MAX_DATA_LENGTH
 
-  _decodeFromReader(reader, opts, function onComplete (err, msg) {
-    if (err) {
-      if (err === true) return cb(new Error('Unexpected end of input from reader.'))
-      return cb(err)
-    }
-    cb(null, msg)
-  })
-}
+  return source => (async function * () {
+    let buffer = new BufferList()
+    let mode = ReadModes.LENGTH
+    let state = {}
 
-function _decodeFromReader (reader, opts, cb) {
-  opts = Object.assign({
-    fixed: false,
-    maxLength: MAX_LENGTH
-  }, opts || {})
-
-  if (opts.fixed) {
-    readFixedMessage(reader, opts.maxLength, cb)
-  } else {
-    readVarintMessage(reader, opts.maxLength, cb)
-  }
-}
-
-function readFixedMessage (reader, maxLength, cb) {
-  reader.read(4, (err, bytes) => {
-    if (err) {
-      return cb(err)
-    }
-
-    const msgSize = bytes.readInt32BE(0) // reads exactly 4 bytes
-    if (msgSize > maxLength) {
-      return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
-    }
-
-    readMessage(reader, msgSize, cb)
-  })
-}
-
-function readVarintMessage (reader, maxLength, cb) {
-  let rawMsgSize = []
-  if (rawMsgSize.length === 0) readByte()
-
-  // 1. Read the varint
-  function readByte () {
-    reader.read(1, (err, byte) => {
-      if (err) {
-        return cb(err)
+    for await (let chunk of source) {
+      while (chunk) {
+        const result = ReadHandlers[mode](chunk, buffer, state, options)
+        ;({ mode, chunk, buffer, state } = result)
+        if (result.value) yield result.value
       }
-
-      rawMsgSize.push(byte)
-
-      if (byte && !isEndByte(byte[0])) {
-        readByte()
-        return
-      }
-
-      const msgSize = varint.decode(Buffer.concat(rawMsgSize))
-      if (msgSize > maxLength) {
-        return cb(new Error('size longer than max permitted length of ' + maxLength + '!'))
-      }
-
-      if (msgSize <= 0) {
-        return cb(true) // eslint-disable-line standard/no-callback-literal
-      }
-
-      readMessage(reader, msgSize, (err, msg) => {
-        if (err) {
-          return cb(err)
-        }
-
-        rawMsgSize = []
-
-        if (msg.length < msgSize) {
-          return cb(new Error('Message length does not match prefix specified length.'))
-        }
-        cb(null, msg)
-      })
-    })
-  }
-}
-
-function readMessage (reader, size, cb) {
-  reader.read(size, (err, msg) => {
-    if (err) {
-      return cb(err)
     }
-
-    cb(null, msg)
-  })
+  })()
 }
+
+module.exports = decode
+module.exports.MAX_DATA_LENGTH = MAX_DATA_LENGTH
