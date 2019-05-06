@@ -19,11 +19,11 @@ const ReadHandlers = {
   [ReadModes.LENGTH]: (chunk, buffer, state, options) => {
     let endByteIndex = -1
 
-    for (let i = 0; i < chunk.length; i++) {
-      // Get byte from BufferList or Buffer
-      const byte = chunk.get ? chunk.get(i) : chunk[i]
+    // BufferList bytes must be accessed via .get
+    const getByte = chunk.get ? i => chunk.get(i) : i => chunk[i]
 
-      if (isEndByte(byte)) {
+    for (let i = 0; i < chunk.length; i++) {
+      if (isEndByte(getByte(i))) {
         endByteIndex = i
         break
       }
@@ -36,17 +36,17 @@ const ReadHandlers = {
     endByteIndex = buffer.length + endByteIndex
     buffer = buffer.append(chunk)
 
-    const dataLength = Varint.decode(toBufferProxy(buffer.shallowSlice(0, endByteIndex)))
+    const dataLength = Varint.decode(toBufferProxy(buffer.shallowSlice(0, endByteIndex + 1)))
 
     if (dataLength > options.maxDataLength) {
       throw Object.assign(new Error('message too long'), { code: 'ERR_MSG_TOO_LONG' })
     }
 
-    chunk = buffer.shallowSlice(endByteIndex)
+    chunk = buffer.shallowSlice(endByteIndex + 1)
     buffer = new BufferList()
 
     if (dataLength <= 0) {
-      return { mode: ReadModes.LENGTH, chunk, buffer, value: new BufferList(Empty) }
+      return { mode: ReadModes.LENGTH, chunk, buffer, value: Empty }
     }
 
     return { mode: ReadModes.DATA, chunk, buffer, state: { dataLength } }
@@ -59,9 +59,10 @@ const ReadHandlers = {
       return { mode: ReadModes.DATA, buffer, state }
     }
 
-    const value = buffer.shallowSlice(0, state.dataLength)
+    const value = buffer.shallowSlice(0, state.dataLength + 1)
 
-    chunk = buffer.shallowSlice(state.dataLength)
+    chunk = buffer.shallowSlice(state.dataLength + 1)
+    chunk = chunk.length ? chunk : null
     buffer = new BufferList()
 
     return { mode: ReadModes.LENGTH, chunk, buffer, value }
