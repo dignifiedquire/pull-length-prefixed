@@ -89,6 +89,10 @@ function decode (options) {
         if (result.data) yield result.data
       }
     }
+
+    if (buffer.length) {
+      throw Object.assign(new Error('unexpected end of input'), { code: 'ERR_UNEXPECTED_EOF' })
+    }
   })()
 }
 
