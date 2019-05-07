@@ -30,7 +30,7 @@ await pipe(
   lp.encode(),
   async source => {
     for await (const chunk of source) {
-      encoded.push(chunk)
+      encoded.push(chunk.slice()) // (.slice converts BufferList to Buffer)
     }
   }
 )
@@ -46,7 +46,7 @@ await pipe(
   lp.decode(),
   async source => {
     for await (const chunk of source) {
-      decoded.push(chunk)
+      decoded.push(chunk.slice()) // (.slice converts BufferList to Buffer)
     }
   }
 )
@@ -64,7 +64,7 @@ console.log(decoded)
 
 All messages will be prefixed with a varint.
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it).
+Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
 
 ### `decode([opts])`
 
@@ -73,7 +73,7 @@ Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef5
 
 All messages will be prefixed with a varint.
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it).
+Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
 
 ## Contribute
 
