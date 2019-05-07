@@ -1,6 +1,6 @@
 {
   "name": "it-length-prefixed",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Streaming length prefixed buffers with async iterables",
   "main": "src/index.js",
   "scripts": {
@@ -46,5 +46,16 @@
     "random-bytes": "^1.0.0",
     "random-int": "^2.0.0",
     "streaming-iterables": "^4.1.0"
-  }
+  },
+  "contributors": [
+    "Alan Shaw <alan.shaw@protocol.ai>",
+    "Dmitriy Ryajov <dryajov@gmail.com>",
+    "Jacob Heun <jacobheun@gmail.com>",
+    "Jacob Heun <jake@andyet.net>",
+    "Maciej Krüger <mkg20001@gmail.com>",
+    "Projjol Banerji <probaner23@gmail.com>",
+    "Richard Littauer <richard.littauer@gmail.com>",
+    "dignifiedquire <dignifiedquire@users.noreply.github.com>",
+    "dignifiedquire <dignifiedquire@gmail.com>"
+  ]
 }
