@@ -1,3 +1,13 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/alanshaw/it-length-prefixed/compare/v1.0.0...v1.1.0) (2019-08-13)
+
+
+### Features
+
+* encode single and optional decode onLength/onData callbacks ([#1](https://github.com/alanshaw/it-length-prefixed/issues/1)) ([ce68bc8](https://github.com/alanshaw/it-length-prefixed/commit/ce68bc8))
+
+
+
 <a name="1.0.0"></a>
 # 1.0.0 (2019-05-07)
 
