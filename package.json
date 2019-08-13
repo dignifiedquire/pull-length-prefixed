@@ -35,6 +35,7 @@
   "homepage": "https://github.com/alanshaw/it-length-prefixed#readme",
   "dependencies": {
     "bl": "^3.0.0",
+    "buffer": "^5.3.0",
     "varint": "^5.0.0"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "it-block": "^1.0.1",
     "it-pipe": "^1.0.1",
     "it-pushable": "^1.2.1",
+    "p-defer": "^3.0.0",
     "random-bytes": "^1.0.0",
     "random-int": "^2.0.0",
     "streaming-iterables": "^4.1.0"

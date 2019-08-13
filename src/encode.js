@@ -1,6 +1,7 @@
 'use strict'
 
 const Varint = require('varint')
+const { Buffer } = require('buffer')
 const BufferList = require('bl')
 
 const MIN_POOL_SIZE = 147 // Varint.encode(Number.MAX_VALUE).length
@@ -29,6 +30,8 @@ function encode (options) {
     }
   })()
 }
+
+encode.single = c => new BufferList([Buffer.from(Varint.encode(c.length)), c])
 
 module.exports = encode
 module.exports.MIN_POOL_SIZE = MIN_POOL_SIZE

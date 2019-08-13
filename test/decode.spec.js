@@ -8,6 +8,7 @@ const randomBytes = require('random-bytes')
 const { map, collect } = require('streaming-iterables')
 const Varint = require('varint')
 const BufferList = require('bl')
+const defer = require('p-defer')
 
 const lp = require('../')
 const { MAX_DATA_LENGTH } = lp.decode
@@ -122,5 +123,60 @@ describe('decode', () => {
     const output = await pipe(input, lp.decode(), toBuffer, collect)
     expect(output[0].slice(-byteLength0)).to.deep.equal(bytes0)
     expect(output[1].slice(-byteLength1)).to.deep.equal(bytes1)
+  })
+
+  it('should callback on length and data boundaries', async () => {
+    const byteLength0 = randomInt(2, 64)
+    const bytes0 = await randomBytes(byteLength0)
+
+    const byteLength1 = randomInt(1, 64)
+    const bytes1 = await randomBytes(byteLength1)
+
+    const input = [
+      Buffer.concat([
+        Buffer.from(Varint.encode(byteLength0)),
+        bytes0,
+        Buffer.from(Varint.encode(byteLength1)),
+        bytes1
+      ])
+    ]
+
+    const lengthDeferred = defer()
+    const dataDeferred = defer()
+
+    const expectedLengths = [byteLength0, byteLength1]
+    const expectedDatas = [bytes0, bytes1]
+
+    const onLength = len => {
+      const expectedLength = expectedLengths.shift()
+
+      try {
+        expect(len).to.equal(expectedLength)
+      } catch (err) {
+        return lengthDeferred.reject(err)
+      }
+
+      if (!expectedLengths.length) {
+        lengthDeferred.resolve()
+      }
+    }
+
+    const onData = data => {
+      const expectedData = expectedDatas.shift()
+
+      try {
+        expect(data.slice()).to.eql(expectedData)
+      } catch (err) {
+        return dataDeferred.reject(err)
+      }
+
+      if (!expectedLengths.length) {
+        dataDeferred.resolve()
+      }
+    }
+
+    pipe(input, lp.decode({ onLength, onData }), collect)
+
+    await Promise.all([lengthDeferred.promise, dataDeferred.promise])
   })
 })

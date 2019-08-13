@@ -66,10 +66,18 @@ All messages will be prefixed with a varint.
 
 Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
 
+### `encode.single(chunk)`
+
+- `chunk: Buffer|BufferList` chunk to encode
+
+Returns a `BufferList` containing the encoded chunk.
+
 ### `decode([opts])`
 
 - `opts: Object`, optional
   - `maxDataLength`: If provided, will not decode messages longer than the size specified, if omitted will use the current default of 4MB.
+  - `onLength(len: Number)`: Called for every length prefix that is decoded from the stream
+  - `onData(data: BufferList)`: Called for every chunk of data that is decoded from the stream
 
 All messages will be prefixed with a varint.
 

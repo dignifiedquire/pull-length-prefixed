@@ -46,7 +46,10 @@ const ReadHandlers = {
     chunk = buffer.shallowSlice(endByteIndex + 1)
     buffer = new BufferList()
 
+    if (options.onLength) options.onLength(dataLength)
+
     if (dataLength <= 0) {
+      if (options.onData) options.onData(Empty)
       return { mode: ReadModes.LENGTH, chunk, buffer, data: Empty }
     }
 
@@ -67,6 +70,7 @@ const ReadHandlers = {
     chunk = buffer.length > dataLength ? buffer.shallowSlice(dataLength) : null
     buffer = new BufferList()
 
+    if (options.onData) options.onData(data)
     return { mode: ReadModes.LENGTH, chunk, buffer, data }
   }
 }
