@@ -1,6 +1,6 @@
 {
   "name": "it-length-prefixed",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Streaming length prefixed buffers with async iterables",
   "main": "src/index.js",
   "scripts": {
