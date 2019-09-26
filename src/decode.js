@@ -1,6 +1,6 @@
 'use strict'
 
-const BufferList = require('bl')
+const BufferList = require('bl/BufferList')
 const Varint = require('varint')
 
 const MSB = 0x80

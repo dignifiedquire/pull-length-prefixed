@@ -19,7 +19,7 @@ describe('encode.single', () => {
     expect(output.slice(Varint.decode.bytes)).to.deep.equal(input)
   })
 
-  it('should encode zero length as prefix', async () => {
+  it('should encode zero length as prefix', () => {
     const input = Buffer.alloc(0)
     const output = lp.encode.single(input)
 

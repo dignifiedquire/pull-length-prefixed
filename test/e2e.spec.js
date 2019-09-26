@@ -180,7 +180,7 @@ describe('e2e', () => {
   })
 
   describe('back pressure', () => {
-    let input = []
+    const input = []
 
     before(() => {
       for (let j = 0; j < 200; j++) {

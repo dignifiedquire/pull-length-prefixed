@@ -7,7 +7,7 @@ const randomInt = require('random-int')
 const randomBytes = require('random-bytes')
 const { map, collect } = require('streaming-iterables')
 const Varint = require('varint')
-const BufferList = require('bl')
+const BufferList = require('bl/BufferList')
 const defer = require('p-defer')
 
 const lp = require('../')
@@ -24,7 +24,7 @@ describe('decode', () => {
       bytes
     ])
 
-    const [ output ] = await pipe([input], lp.decode(), toBuffer, collect)
+    const [output] = await pipe([input], lp.decode(), toBuffer, collect)
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })
 
@@ -34,7 +34,7 @@ describe('decode', () => {
       Buffer.alloc(0)
     ])
 
-    const [ output ] = await pipe([input], lp.decode(), collect)
+    const [output] = await pipe([input], lp.decode(), collect)
     expect(output).to.deep.equal(Buffer.alloc(0))
   })
 
@@ -47,7 +47,7 @@ describe('decode', () => {
       bytes
     ])
 
-    const [ output ] = await pipe([input], lp.decode(), toBuffer, collect)
+    const [output] = await pipe([input], lp.decode(), toBuffer, collect)
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })
 
@@ -63,7 +63,7 @@ describe('decode', () => {
       ])
     ]
 
-    const [ output ] = await pipe(input, lp.decode(), toBuffer, collect)
+    const [output] = await pipe(input, lp.decode(), toBuffer, collect)
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })
 
@@ -79,7 +79,7 @@ describe('decode', () => {
       bytes.slice(1)
     ]
 
-    const [ output ] = await pipe(input, lp.decode(), toBuffer, collect)
+    const [output] = await pipe(input, lp.decode(), toBuffer, collect)
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })
 
