@@ -100,5 +100,32 @@ function decode (options) {
   })()
 }
 
+function decodeFromReader (reader, options) {
+  options = options || {}
+
+  let byteLength = 1 // Read single byte chunks until the length is known
+  const varByteSource = {
+    [Symbol.asyncIterator] () { return this },
+    next: async () => {
+      try {
+        return await reader.next(byteLength)
+      } catch (err) {
+        if (err.code === 'ERR_UNDER_READ') {
+          return { done: true, value: null }
+        }
+        throw err
+      } finally {
+        // Reset the byteLength so we continue to check for varints
+        byteLength = 1
+      }
+    }
+  }
+
+  // Once the length has been parsed, read chunk for that length
+  options.onLength = l => { byteLength = l }
+  return decode(options)(varByteSource)
+}
+
 module.exports = decode
+module.exports.decodeFromReader = decodeFromReader
 module.exports.MAX_DATA_LENGTH = MAX_DATA_LENGTH

@@ -44,6 +44,7 @@
     "it-block": "^2.0.0",
     "it-pipe": "^1.0.1",
     "it-pushable": "^1.3.1",
+    "it-reader": "^2.0.0",
     "p-defer": "^3.0.0",
     "random-bytes": "^1.0.0",
     "random-int": "^2.0.0",

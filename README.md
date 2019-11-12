@@ -79,7 +79,16 @@ Returns a `BufferList` containing the encoded chunk.
   - `onLength(len: Number)`: Called for every length prefix that is decoded from the stream
   - `onData(data: BufferList)`: Called for every chunk of data that is decoded from the stream
 
-All messages will be prefixed with a varint.
+Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
+
+### `decodeFromReader(reader, [opts])`
+
+Behaves like `decode` except it only reads the exact number of bytes needed for each message in `reader`.
+
+- `reader: Reader`: An [it-reader](https://github.com/alanshaw/it-reader)
+- `opts: Object`, optional
+  - `maxDataLength`: If provided, will not decode messages longer than the size specified, if omitted will use the current default of 4MB.
+  - `onData(data: BufferList)`: Called for every chunk of data that is decoded from the stream
 
 Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
 
