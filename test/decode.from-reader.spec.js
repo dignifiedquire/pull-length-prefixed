@@ -22,7 +22,7 @@ describe('decode from reader', () => {
     )
 
     const output = await pipe(
-      lp.decodeFromReader(reader),
+      lp.decode.fromReader(reader),
       toBuffer,
       collect
     )
@@ -42,7 +42,7 @@ describe('decode from reader', () => {
     const reader = Reader(input)
     try {
       await pipe(
-        lp.decodeFromReader(reader, { maxDataLength: 100 }),
+        lp.decode.fromReader(reader, { maxDataLength: 100 }),
         toBuffer,
         collect
       )

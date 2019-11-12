@@ -81,7 +81,7 @@ Returns a `BufferList` containing the encoded chunk.
 
 Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
 
-### `decodeFromReader(reader, [opts])`
+### `decode.fromReader(reader, [opts])`
 
 Behaves like `decode` except it only reads the exact number of bytes needed for each message in `reader`.
 

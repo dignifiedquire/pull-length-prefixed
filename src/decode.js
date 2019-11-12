@@ -100,7 +100,7 @@ function decode (options) {
   })()
 }
 
-function decodeFromReader (reader, options) {
+decode.fromReader = (reader, options) => {
   options = options || {}
 
   let byteLength = 1 // Read single byte chunks until the length is known
@@ -127,5 +127,4 @@ function decodeFromReader (reader, options) {
 }
 
 module.exports = decode
-module.exports.decodeFromReader = decodeFromReader
 module.exports.MAX_DATA_LENGTH = MAX_DATA_LENGTH
