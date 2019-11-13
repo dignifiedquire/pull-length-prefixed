@@ -4,15 +4,12 @@
 const pipe = require('it-pipe')
 const Reader = require('it-reader')
 const { expect } = require('chai')
-const randomInt = require('random-int')
 const randomBytes = require('random-bytes')
-const { map, collect } = require('streaming-iterables')
+const { collect } = require('streaming-iterables')
 const Varint = require('varint')
+const { toBuffer, times, someBytes } = require('./_helpers')
 
 const lp = require('../')
-const toBuffer = map(c => c.slice())
-const times = (n, fn) => Array.from(Array(n), fn)
-const someBytes = n => randomBytes(randomInt(1, n || 32))
 
 describe('decode from reader', () => {
   it('should be able to decode from an it-reader', async () => {
@@ -47,7 +44,7 @@ describe('decode from reader', () => {
         collect
       )
     } catch (err) {
-      expect(err.code).to.equal('ERR_MSG_TOO_LONG')
+      expect(err.code).to.equal('ERR_MSG_DATA_TOO_LONG')
       return
     }
 

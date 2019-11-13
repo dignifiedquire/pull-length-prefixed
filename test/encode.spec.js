@@ -4,16 +4,13 @@
 const pipe = require('it-pipe')
 const { expect } = require('chai')
 const randomInt = require('random-int')
-const randomBytes = require('random-bytes')
-const { map, collect } = require('streaming-iterables')
+const { collect } = require('streaming-iterables')
 const Varint = require('varint')
+const { toBuffer, times, someBytes } = require('./_helpers')
 
 const lp = require('../')
+const { int32BEEncode } = lp
 const { MIN_POOL_SIZE } = lp.encode
-
-const times = (n, fn) => Array.from(Array(n), fn)
-const someBytes = n => randomBytes(randomInt(1, n || 32))
-const toBuffer = map(c => c.slice())
 
 describe('encode', () => {
   it('should encode length as prefix', async () => {
@@ -48,6 +45,20 @@ describe('encode', () => {
       const length = Varint.decode(o)
       expect(length).to.equal(input[i].length)
       expect(o.slice(Varint.decode.bytes)).to.deep.equal(input[i])
+    })
+  })
+
+  it('should encode with custom length encoder (int32BE)', async () => {
+    const input = await Promise.all(times(randomInt(1, 100), someBytes))
+    const output = await pipe(
+      input,
+      lp.encode({ lengthEncoder: int32BEEncode }),
+      toBuffer,
+      collect
+    )
+    output.forEach((o, i) => {
+      const length = o.readInt32BE(0)
+      expect(length).to.equal(input[i].length)
     })
   })
 })

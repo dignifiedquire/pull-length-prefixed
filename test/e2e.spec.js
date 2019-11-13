@@ -7,9 +7,10 @@ const pipe = require('it-pipe')
 const block = require('it-block')
 const Pushable = require('it-pushable')
 const { map, tap, collect } = require('streaming-iterables')
+const { toBuffer } = require('./_helpers')
 
-const lp = require('../src')
-const toBuffer = map(c => c.slice())
+const lp = require('../')
+const { int32BEEncode, int32BEDecode } = lp
 
 describe('e2e', () => {
   it('basics', async () => {
@@ -68,7 +69,7 @@ describe('e2e', () => {
     try {
       await pipe(encoded, lp.decode({ maxDataLength: 1 }), collect)
     } catch (err) {
-      expect(err.code).to.equal('ERR_MSG_TOO_LONG')
+      expect(err.code).to.equal('ERR_MSG_DATA_TOO_LONG')
       return
     }
 
@@ -212,6 +213,18 @@ describe('e2e', () => {
         lp.encode(),
         delay(10),
         lp.decode(),
+        toBuffer,
+        collect
+      )
+
+      expect(res).to.be.eql(input)
+    })
+
+    it('encode/decode with custom length encoder/decoder', async () => {
+      const res = await pipe(
+        input,
+        lp.encode({ lengthEncoder: int32BEEncode }),
+        lp.decode({ lengthDecoder: int32BEDecode }),
         toBuffer,
         collect
       )

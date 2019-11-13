@@ -2,12 +2,11 @@
 'use strict'
 
 const { expect } = require('chai')
-const randomInt = require('random-int')
-const randomBytes = require('random-bytes')
 const Varint = require('varint')
+const { someBytes } = require('./_helpers')
 
 const lp = require('../')
-const someBytes = n => randomBytes(randomInt(1, n || 32))
+const { int32BEEncode } = lp
 
 describe('encode.single', () => {
   it('should encode length as prefix', async () => {
@@ -26,5 +25,13 @@ describe('encode.single', () => {
     const length = Varint.decode(output.slice())
     expect(length).to.equal(input.length)
     expect(output.slice(Varint.decode.bytes)).to.deep.equal(input)
+  })
+
+  it('should encode with custom length encoder (int32BE)', async () => {
+    const input = await someBytes()
+    const output = lp.encode.single(input, { lengthEncoder: int32BEEncode })
+
+    const length = output.readInt32BE(0)
+    expect(length).to.equal(input.length)
   })
 })

@@ -5,14 +5,15 @@ const pipe = require('it-pipe')
 const { expect } = require('chai')
 const randomInt = require('random-int')
 const randomBytes = require('random-bytes')
-const { map, collect } = require('streaming-iterables')
+const { collect } = require('streaming-iterables')
 const Varint = require('varint')
 const BufferList = require('bl/BufferList')
 const defer = require('p-defer')
+const { toBuffer, times } = require('./_helpers')
 
 const lp = require('../')
-const { MAX_DATA_LENGTH } = lp.decode
-const toBuffer = map(c => c.slice())
+const { MAX_LENGTH_LENGTH, MAX_DATA_LENGTH } = lp.decode
+const { int32BEDecode } = lp
 
 describe('decode', () => {
   it('should decode single message', async () => {
@@ -83,7 +84,24 @@ describe('decode', () => {
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })
 
-  it('should not decode a message that is too long', async () => {
+  it('should not decode message length that is too long', async () => {
+    // A value < 0x80 signifies end of varint so pass buffers of >= 0x80
+    // so that it will keep throwing a RangeError until we reach the max length
+    const lengths = times(5, () => Buffer.alloc(MAX_LENGTH_LENGTH / 4).fill(0x80))
+    const bytes = await randomBytes(randomInt(2, 64))
+
+    const input = [...lengths, bytes]
+
+    try {
+      await pipe(input, lp.decode(), toBuffer, collect)
+    } catch (err) {
+      expect(err.code).to.equal('ERR_MSG_LENGTH_TOO_LONG')
+      return
+    }
+    throw new Error('did not throw for too long message')
+  })
+
+  it('should not decode message data that is too long', async () => {
     const byteLength = MAX_DATA_LENGTH + 1
     const bytes = await randomBytes(byteLength)
 
@@ -95,7 +113,7 @@ describe('decode', () => {
     try {
       await pipe(input, lp.decode(), toBuffer, collect)
     } catch (err) {
-      expect(err.code).to.equal('ERR_MSG_TOO_LONG')
+      expect(err.code).to.equal('ERR_MSG_DATA_TOO_LONG')
       return
     }
     throw new Error('did not throw for too long message')
@@ -178,5 +196,33 @@ describe('decode', () => {
     pipe(input, lp.decode({ onLength, onData }), collect)
 
     await Promise.all([lengthDeferred.promise, dataDeferred.promise])
+  })
+
+  it('should decode with custom length decoder (int32BE)', async () => {
+    const byteLength0 = randomInt(2, 64)
+    const encodedByteLength0 = Buffer.allocUnsafe(4)
+    encodedByteLength0.writeInt32BE(byteLength0)
+    const bytes0 = await randomBytes(byteLength0)
+
+    const byteLength1 = randomInt(1, 64)
+    const encodedByteLength1 = Buffer.allocUnsafe(4)
+    encodedByteLength1.writeInt32BE(byteLength1)
+    const bytes1 = await randomBytes(byteLength1)
+
+    const input = [
+      Buffer.concat([
+        encodedByteLength0,
+        bytes0.slice(0, 1)
+      ]),
+      Buffer.concat([
+        bytes0.slice(1),
+        encodedByteLength1,
+        bytes1
+      ])
+    ]
+
+    const output = await pipe(input, lp.decode({ lengthDecoder: int32BEDecode }), toBuffer, collect)
+    expect(output[0].slice(-byteLength0)).to.deep.equal(bytes0)
+    expect(output[1].slice(-byteLength1)).to.deep.equal(bytes1)
   })
 })

@@ -1,49 +1,39 @@
 'use strict'
 
 const BufferList = require('bl/BufferList')
-const Varint = require('varint')
+const varintDecode = require('./varint-decode')
 
-const MSB = 0x80
-const isEndByte = byte => !(byte & MSB)
+// Maximum length of the length section of the message
+const MAX_LENGTH_LENGTH = 8 // Varint.encode(Number.MAX_SAFE_INTEGER).length
+// Maximum length of the data section of the message
 const MAX_DATA_LENGTH = 1024 * 1024 * 4
 
-const toBufferProxy = bl => new Proxy({}, {
-  get: (_, prop) => prop[0] === 'l' ? bl[prop] : bl.get(parseInt(prop))
-})
-
 const Empty = Buffer.alloc(0)
-
 const ReadModes = { LENGTH: 'readLength', DATA: 'readData' }
 
 const ReadHandlers = {
   [ReadModes.LENGTH]: (chunk, buffer, state, options) => {
     // console.log(ReadModes.LENGTH, chunk.length)
-    let endByteIndex = -1
-
-    // BufferList bytes must be accessed via .get
-    const getByte = chunk.get ? i => chunk.get(i) : i => chunk[i]
-
-    for (let i = 0; i < chunk.length; i++) {
-      if (isEndByte(getByte(i))) {
-        endByteIndex = i
-        break
-      }
-    }
-
-    if (endByteIndex === -1) {
-      return { mode: ReadModes.LENGTH, buffer: buffer.append(chunk) }
-    }
-
-    endByteIndex = buffer.length + endByteIndex
     buffer = buffer.append(chunk)
 
-    const dataLength = Varint.decode(toBufferProxy(buffer.shallowSlice(0, endByteIndex + 1)))
-
-    if (dataLength > options.maxDataLength) {
-      throw Object.assign(new Error('message too long'), { code: 'ERR_MSG_TOO_LONG' })
+    let dataLength
+    try {
+      dataLength = options.lengthDecoder(buffer)
+    } catch (err) {
+      if (buffer.length > options.maxLengthLength) {
+        throw Object.assign(err, { message: 'message length too long', code: 'ERR_MSG_LENGTH_TOO_LONG' })
+      }
+      if (err instanceof RangeError) {
+        return { mode: ReadModes.LENGTH, buffer }
+      }
+      throw err
     }
 
-    chunk = buffer.shallowSlice(endByteIndex + 1)
+    if (dataLength > options.maxDataLength) {
+      throw Object.assign(new Error('message data too long'), { code: 'ERR_MSG_DATA_TOO_LONG' })
+    }
+
+    chunk = buffer.shallowSlice(options.lengthDecoder.bytes)
     buffer = new BufferList()
 
     if (options.onLength) options.onLength(dataLength)
@@ -77,6 +67,8 @@ const ReadHandlers = {
 
 function decode (options) {
   options = options || {}
+  options.lengthDecoder = options.lengthDecoder || varintDecode
+  options.maxLengthLength = options.maxLengthLength || MAX_LENGTH_LENGTH
   options.maxDataLength = options.maxDataLength || MAX_DATA_LENGTH
 
   return source => (async function * () {
@@ -127,4 +119,5 @@ decode.fromReader = (reader, options) => {
 }
 
 module.exports = decode
+module.exports.MAX_LENGTH_LENGTH = MAX_LENGTH_LENGTH
 module.exports.MAX_DATA_LENGTH = MAX_DATA_LENGTH
