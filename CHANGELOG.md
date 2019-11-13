@@ -1,3 +1,22 @@
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v2.0.0...v3.0.0) (2019-11-13)
+
+
+### Features
+
+* add decodeFromReader ([#3](https://github.com/alanshaw/it-length-prefixed/issues/3)) ([b61654d](https://github.com/alanshaw/it-length-prefixed/commit/b61654d))
+* custom length encoding and decoding ([#8](https://github.com/alanshaw/it-length-prefixed/issues/8)) ([e419b63](https://github.com/alanshaw/it-length-prefixed/commit/e419b63))
+
+
+### BREAKING CHANGES
+
+* Additional validation now checks for messages with a length that is too long to prevent a possible DoS attack. The error code `ERR_MSG_TOO_LONG` has changed to `ERR_MSG_DATA_TOO_LONG` and the error code `ERR_MSG_LENGTH_TOO_LONG` has been added.
+
+License: MIT
+Signed-off-by: Alan Shaw <alan.shaw@protocol.ai>
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v1.1.0...v2.0.0) (2019-09-26)
 
