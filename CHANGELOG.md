@@ -1,3 +1,13 @@
+<a name="3.0.1"></a>
+## [3.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v3.0.0...v3.0.1) (2020-03-18)
+
+
+### Bug Fixes
+
+* remove node globals ([#9](https://github.com/alanshaw/it-length-prefixed/issues/9)) ([4389d64](https://github.com/alanshaw/it-length-prefixed/commit/4389d64))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v2.0.0...v3.0.0) (2019-11-13)
 
