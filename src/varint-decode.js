@@ -1,5 +1,6 @@
 'use strict'
 
+const { Buffer } = require('buffer')
 const Varint = require('varint')
 
 const toBufferProxy = bl => new Proxy({}, {

@@ -1,10 +1,11 @@
 /* eslint-env mocha */
 'use strict'
 
+const { Buffer } = require('buffer')
 const pipe = require('it-pipe')
 const { expect } = require('chai')
 const randomInt = require('random-int')
-const randomBytes = require('random-bytes')
+const randomBytes = require('iso-random-stream/src/random')
 const { collect } = require('streaming-iterables')
 const Varint = require('varint')
 const BufferList = require('bl/BufferList')

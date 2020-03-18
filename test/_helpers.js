@@ -2,7 +2,7 @@
 
 const { map } = require('streaming-iterables')
 const randomInt = require('random-int')
-const randomBytes = require('random-bytes')
+const randomBytes = require('iso-random-stream/src/random')
 
 module.exports.toBuffer = map(c => c.slice())
 module.exports.times = (n, fn) => Array.from(Array(n), fn)

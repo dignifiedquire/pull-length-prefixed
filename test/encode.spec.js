@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 'use strict'
 
+const { Buffer } = require('buffer')
 const pipe = require('it-pipe')
 const { expect } = require('chai')
 const randomInt = require('random-int')

@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 'use strict'
 
+const { Buffer } = require('buffer')
 const { expect } = require('chai')
 const Varint = require('varint')
 const pipe = require('it-pipe')
