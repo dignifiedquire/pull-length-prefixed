@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/alanshaw/it-length-prefixed#readme",
   "dependencies": {
-    "bl": "^4.0.0",
+    "bl": "^4.0.2",
     "buffer": "^5.5.0",
     "varint": "^5.0.0"
   },
@@ -45,10 +45,10 @@
     "it-block": "^2.0.0",
     "it-pipe": "^1.1.0",
     "it-pushable": "^1.4.0",
-    "it-reader": "^2.0.0",
+    "it-reader": "^2.1.0",
     "p-defer": "^3.0.0",
     "random-int": "^2.0.0",
-    "streaming-iterables": "^4.1.0"
+    "streaming-iterables": "^4.1.2"
   },
   "contributors": [
     "Alan Shaw <alan.shaw@protocol.ai>",
