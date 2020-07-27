@@ -1,6 +1,6 @@
 {
   "name": "it-length-prefixed",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Streaming length prefixed buffers with async iterables",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -53,8 +53,8 @@
     "streaming-iterables": "^5.0.2"
   },
   "contributors": [
-    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
     "Alan Shaw <alan.shaw@protocol.ai>",
+    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
     "Jacob Heun <jacobheun@gmail.com>",
     "Maciej Krüger <mkg20001@gmail.com>",
     "Projjol Banerji <probaner23@gmail.com>",
