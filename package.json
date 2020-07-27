@@ -3,6 +3,7 @@
   "version": "3.0.1",
   "description": "Streaming length prefixed buffers with async iterables",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "scripts": {
     "test": "aegir test -t node -t browser",
     "test:browser": "aegir test -t browser",
@@ -34,6 +35,7 @@
   },
   "homepage": "https://github.com/alanshaw/it-length-prefixed#readme",
   "dependencies": {
+    "@types/bl": "^2.1.0",
     "bl": "^4.0.2",
     "buffer": "^5.5.0",
     "varint": "^5.0.0"
