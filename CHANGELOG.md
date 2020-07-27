@@ -1,3 +1,13 @@
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/alanshaw/it-length-prefixed/compare/v3.0.1...v3.1.0) (2020-07-27)
+
+
+### Features
+
+* add type declarations ([#11](https://github.com/alanshaw/it-length-prefixed/issues/11)) ([d97982d](https://github.com/alanshaw/it-length-prefixed/commit/d97982d))
+
+
+
 <a name="3.0.1"></a>
 ## [3.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v3.0.0...v3.0.1) (2020-03-18)
 
