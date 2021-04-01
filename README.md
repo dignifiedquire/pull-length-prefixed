@@ -5,7 +5,7 @@
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 ![Travis (.org)](https://img.shields.io/travis/alanshaw/it-length-prefixed.svg?style=flat-square)
 ![Codecov](https://img.shields.io/codecov/c/gh/alanshaw/it-length-prefixed.svg?style=flat-square)
-[![Dependency Status](https://david-dm.org/alanshaw/it-length-prefixed.svg?style=flat-square)](https://david-dm.org/alanshaw/it-length-prefixed)
+[![Dependency Status](https://status.david-dm.org/gh/alanshaw/it-length-prefixed.svg?style=flat-square)](https://david-dm.org/alanshaw/it-length-prefixed)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
 > Streaming length prefixed buffers with async iterators
