@@ -7,13 +7,19 @@ const varintEncode = require('./varint-encode')
 const MIN_POOL_SIZE = 8 // Varint.encode(Number.MAX_SAFE_INTEGER).length
 const DEFAULT_POOL_SIZE = 10 * 1024
 
+/**
+ * @param {import('./types').EncoderOptions} options
+ */
 function encode (options) {
   options = options || {}
 
   const poolSize = Math.max(options.poolSize || DEFAULT_POOL_SIZE, options.minPoolSize || MIN_POOL_SIZE)
   const encodeLength = options.lengthEncoder || varintEncode
 
-  return source => (async function * () {
+  /**
+   * @param {AsyncIterable<BufferList>} source
+   */
+  const encoder = async function * (source) {
     let pool = Buffer.alloc(poolSize)
     let poolOffset = 0
 
@@ -30,13 +36,19 @@ function encode (options) {
       yield new BufferList().append(encodedLength).append(chunk)
       // yield Buffer.concat([encodedLength, chunk])
     }
-  })()
+  }
+
+  return encoder
 }
 
+/**
+ * @param {BufferList | Buffer} chunk
+ * @param {import('./types').EncoderOptions} options
+ */
 encode.single = (chunk, options) => {
   options = options || {}
   const encodeLength = options.lengthEncoder || varintEncode
-  return new BufferList([encodeLength(chunk.length), chunk])
+  return new BufferList([encodeLength(chunk.length), chunk.slice()])
 }
 
 module.exports = encode

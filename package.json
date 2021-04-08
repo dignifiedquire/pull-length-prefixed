@@ -36,14 +36,14 @@
   "homepage": "https://github.com/alanshaw/it-length-prefixed#readme",
   "dependencies": {
     "@types/bl": "^4.1.0",
-    "bl": "^4.0.2",
+    "bl": "^5.0.0",
     "buffer": "^6.0.3",
     "varint": "^6.0.0"
   },
   "devDependencies": {
-    "aegir": "^32.2.0",
+    "aegir": "^33.0.0",
     "chai": "^4.2.0",
-    "iso-random-stream": "^1.1.1",
+    "iso-random-stream": "^2.0.0",
     "it-block": "^2.0.0",
     "it-pipe": "^1.1.0",
     "it-pushable": "^1.4.0",

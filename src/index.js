@@ -1,5 +1,10 @@
 'use strict'
 
+/**
+ * @typedef {import('./types').EncoderOptions} EncoderOptions
+ * @typedef {import('./types').DecoderOptions} DecoderOptions
+ */
+
 exports.encode = require('./encode')
 exports.decode = require('./decode')
 

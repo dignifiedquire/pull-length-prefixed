@@ -13,6 +13,13 @@ const Empty = Buffer.alloc(0)
 const ReadModes = { LENGTH: 'readLength', DATA: 'readData' }
 
 const ReadHandlers = {
+  /**
+   * @param {BufferList} chunk
+   * @param {BufferList} buffer
+   * @param {import('./types').ReadState | undefined} state
+   * @param {import('./types').DecoderOptions} options
+   * @returns {import('./types').ReadResult}
+   */
   [ReadModes.LENGTH]: (chunk, buffer, state, options) => {
     // console.log(ReadModes.LENGTH, chunk.length)
     buffer = buffer.append(chunk)
@@ -25,7 +32,7 @@ const ReadHandlers = {
         throw Object.assign(err, { message: 'message length too long', code: 'ERR_MSG_LENGTH_TOO_LONG' })
       }
       if (err instanceof RangeError) {
-        return { mode: ReadModes.LENGTH, buffer }
+        return { mode: ReadModes.LENGTH, buffer, chunk: undefined, state: undefined, data: undefined }
       }
       throw err
     }
@@ -44,59 +51,100 @@ const ReadHandlers = {
       return { mode: ReadModes.LENGTH, chunk, buffer, data: Empty }
     }
 
-    return { mode: ReadModes.DATA, chunk, buffer, state: { dataLength } }
+    return { mode: ReadModes.DATA, chunk, buffer, state: { dataLength }, data: undefined }
   },
 
+  /**
+   * @param {BufferList} chunk
+   * @param {BufferList} buffer
+   * @param {import('./types').ReadState | undefined} state
+   * @param {import('./types').DecoderOptions} options
+   * @returns {import('./types').ReadResult}
+   */
   [ReadModes.DATA]: (chunk, buffer, state, options) => {
     // console.log(ReadModes.DATA, chunk.length)
     buffer = buffer.append(chunk)
 
+    if (!state) {
+      throw new Error('state is required')
+    }
+
     if (buffer.length < state.dataLength) {
-      return { mode: ReadModes.DATA, buffer, state }
+      return { mode: ReadModes.DATA, buffer, state, chunk: undefined, data: undefined }
     }
 
     const { dataLength } = state
     const data = buffer.shallowSlice(0, dataLength)
 
-    chunk = buffer.length > dataLength ? buffer.shallowSlice(dataLength) : null
+    const nextChunk = buffer.length > dataLength ? buffer.shallowSlice(dataLength) : undefined
     buffer = new BufferList()
 
     if (options.onData) options.onData(data)
-    return { mode: ReadModes.LENGTH, chunk, buffer, data }
+    return { mode: ReadModes.LENGTH, chunk: nextChunk, buffer, state: undefined, data }
   }
 }
 
+/**
+ * @param {any} options
+ */
 function decode (options) {
   options = options || {}
-  options.lengthDecoder = options.lengthDecoder || varintDecode
-  options.maxLengthLength = options.maxLengthLength || MAX_LENGTH_LENGTH
-  options.maxDataLength = options.maxDataLength || MAX_DATA_LENGTH
 
-  return source => (async function * () {
+  /**
+   * @type {import('./types').DecoderOptions}
+   */
+  const opts = {
+    lengthDecoder: options.lengthDecoder || varintDecode,
+    maxLengthLength: options.maxLengthLength || MAX_LENGTH_LENGTH,
+    maxDataLength: options.maxDataLength || MAX_DATA_LENGTH,
+    onLength: options.onLength,
+    onData: options.onData
+  }
+
+  /**
+   * @param {AsyncIterable<BufferList>} source
+   */
+  const decoder = async function * (source) {
     let buffer = new BufferList()
     let mode = ReadModes.LENGTH // current parsing mode
     let state // accumulated state for the current mode
 
-    for await (let chunk of source) {
+    for await (const chunk of source) {
+      /** @type {BufferList | undefined} */
+      let nextChunk = chunk
+
       // Each chunk may contain multiple messages - keep calling handler for the
       // current parsing mode until all handlers have consumed the chunk.
-      while (chunk) {
-        const result = ReadHandlers[mode](chunk, buffer, state, options)
-        ;({ mode, chunk, buffer, state } = result)
-        if (result.data) yield result.data
+      while (nextChunk) {
+        const result = ReadHandlers[mode](nextChunk, buffer, state, opts)
+
+        mode = result.mode
+        nextChunk = result.chunk
+        buffer = result.buffer
+        state = result.state
+
+        if (result.data) {
+          yield result.data
+        }
       }
     }
 
     if (buffer.length) {
       throw Object.assign(new Error('unexpected end of input'), { code: 'ERR_UNEXPECTED_EOF' })
     }
-  })()
+  }
+
+  return decoder
 }
 
+/**
+ * @param {*} reader
+ * @param {import('./types').DecoderOptions} options
+ * @returns
+ */
 decode.fromReader = (reader, options) => {
-  options = options || {}
-
   let byteLength = 1 // Read single byte chunks until the length is known
+
   const varByteSource = {
     [Symbol.asyncIterator] () { return this },
     next: async () => {
@@ -114,9 +162,16 @@ decode.fromReader = (reader, options) => {
     }
   }
 
-  // Once the length has been parsed, read chunk for that length
-  options.onLength = l => { byteLength = l }
-  return decode(options)(varByteSource)
+  /**
+   * Once the length has been parsed, read chunk for that length
+   *
+   * @param {number} l
+   */
+  const onLength = l => { byteLength = l }
+  return decode({
+    ...(options || {}),
+    onLength
+  })(varByteSource)
 }
 
 module.exports = decode

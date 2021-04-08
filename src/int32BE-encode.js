@@ -2,6 +2,11 @@
 
 const { Buffer } = require('buffer')
 
+/**
+ * @param {number} value
+ * @param {Buffer} target
+ * @param {number} offset
+ */
 const int32BEEncode = (value, target, offset) => {
   target = target || Buffer.allocUnsafe(4)
   target.writeInt32BE(value, offset)

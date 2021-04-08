@@ -1,5 +1,8 @@
 'use strict'
 
+/**
+ * @param {import('buffer').Buffer} data
+ */
 const int32BEDecode = data => {
   if (data.length < 4) throw RangeError('Could not decode int32BE')
   return data.readInt32BE(0)
