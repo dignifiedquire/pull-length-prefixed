@@ -3,7 +3,7 @@
   "version": "5.0.0",
   "description": "Streaming length prefixed buffers with async iterables",
   "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "test": "aegir test -t node -t browser",
     "test:browser": "aegir test -t browser",
