@@ -1,6 +1,7 @@
 'use strict'
 
 const { Buffer } = require('buffer')
+// @ts-ignore
 const BufferList = require('bl/BufferList')
 const varintEncode = require('./varint-encode')
 
