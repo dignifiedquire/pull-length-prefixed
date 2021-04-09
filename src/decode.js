@@ -86,7 +86,7 @@ const ReadHandlers = {
 }
 
 /**
- * @param {any} options
+ * @param {any} [options]
  */
 function decode (options) {
   options = options || {}
@@ -140,7 +140,7 @@ function decode (options) {
 
 /**
  * @param {*} reader
- * @param {import('./types').DecoderOptions} options
+ * @param {import('./types').DecoderOptions} [options]
  * @returns
  */
 decode.fromReader = (reader, options) => {

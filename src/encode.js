@@ -9,7 +9,7 @@ const MIN_POOL_SIZE = 8 // Varint.encode(Number.MAX_SAFE_INTEGER).length
 const DEFAULT_POOL_SIZE = 10 * 1024
 
 /**
- * @param {import('./types').EncoderOptions} options
+ * @param {import('./types').EncoderOptions} [options]
  */
 function encode (options) {
   options = options || {}
@@ -44,7 +44,7 @@ function encode (options) {
 
 /**
  * @param {BufferList | Buffer} chunk
- * @param {import('./types').EncoderOptions} options
+ * @param {import('./types').EncoderOptions} [options]
  */
 encode.single = (chunk, options) => {
   options = options || {}
