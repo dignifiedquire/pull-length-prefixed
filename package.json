@@ -1,6 +1,6 @@
 {
   "name": "it-length-prefixed",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Streaming length prefixed buffers with async iterables",
   "main": "src/index.js",
   "types": "dist/src/index.d.ts",
@@ -57,11 +57,11 @@
     "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
     "Jacob Heun <jacobheun@gmail.com>",
     "Alex Potsides <alex@achingbrain.net>",
-    "Dmitriy Ryajov <dryajov@gmail.com>",
+    "Vasco Santos <vasco.santos@ua.pt>",
     "Maciej Krüger <mkg20001@gmail.com>",
     "Projjol Banerji <probaner23@gmail.com>",
     "Richard Littauer <richard.littauer@gmail.com>",
-    "Vasco Santos <vasco.santos@ua.pt>",
+    "Dmitriy Ryajov <dryajov@gmail.com>",
     "Hugo Dias <mail@hugodias.me>"
   ]
 }
