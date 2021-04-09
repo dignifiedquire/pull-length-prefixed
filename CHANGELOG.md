@@ -1,3 +1,12 @@
+## [5.0.2](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.1...v5.0.2) (2021-04-09)
+
+
+### Bug Fixes
+
+* options are optional ([#16](https://github.com/alanshaw/it-length-prefixed/issues/16)) ([2a914ef](https://github.com/alanshaw/it-length-prefixed/commit/2a914efa323fb40b465ceb33c1b4ca6575d669b5))
+
+
+
 ## [5.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.0...v5.0.1) (2021-04-09)
 
 
