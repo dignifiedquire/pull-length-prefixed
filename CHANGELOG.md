@@ -1,3 +1,13 @@
+## [5.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.0...v5.0.1) (2021-04-09)
+
+
+### Bug Fixes
+
+* ignore the ts error ([6d763e6](https://github.com/alanshaw/it-length-prefixed/commit/6d763e688576660296f6c8aedbff1699b9951cd7))
+* types property ([#15](https://github.com/alanshaw/it-length-prefixed/issues/15)) ([c634368](https://github.com/alanshaw/it-length-prefixed/commit/c634368c4788293be189a83301c92fd4d0910836))
+
+
+
 # [4.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v3.1.0...v4.0.0) (2021-04-01)
 
 
