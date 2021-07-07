@@ -49,8 +49,8 @@
     "it-pushable": "^1.4.0",
     "it-reader": "^3.0.0",
     "p-defer": "^3.0.0",
-    "random-int": "^2.0.0",
-    "streaming-iterables": "^5.0.2"
+    "random-int": "^2.0.1",
+    "streaming-iterables": "^6.0.0"
   },
   "contributors": [
     "Alan Shaw <alan.shaw@protocol.ai>",
