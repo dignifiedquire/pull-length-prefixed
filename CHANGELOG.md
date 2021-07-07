@@ -1,3 +1,16 @@
+## [5.0.3](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.2...v5.0.3) (2021-07-07)
+
+
+### Bug Fixes
+
+* install esbuild before aegir stuff ([591e758](https://github.com/alanshaw/it-length-prefixed/commit/591e758600ff13703b93cdb49f00c307311bdc01))
+* manually run esbuild install ([1f1332c](https://github.com/alanshaw/it-length-prefixed/commit/1f1332cd479ceb0204740536f23ad375d5c3eb27))
+* not yet main here ([c9ac358](https://github.com/alanshaw/it-length-prefixed/commit/c9ac3581b9c69f47fbfbf1ffed98811e235583db))
+* travis status badge ([75b6382](https://github.com/alanshaw/it-length-prefixed/commit/75b6382903eb65a25bbc3deb37dfb5160bad38ce))
+* upgrade @types/bl ([#17](https://github.com/alanshaw/it-length-prefixed/issues/17)) ([859440d](https://github.com/alanshaw/it-length-prefixed/commit/859440d1bf023a8aa1668b803efae89768081ae0))
+
+
+
 ## [5.0.2](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.1...v5.0.2) (2021-04-09)
 
 
