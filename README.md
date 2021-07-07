@@ -3,7 +3,7 @@
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg)](http://ipn.io)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg)](http://webchat.freenode.net/?channels=%23ipfs)
-[![Build Status](https://travis-ci.com/alanshaw/it-length-prefixed.svg?branch=master)](https://travis-ci.com/alanshaw/it-length-prefixed)
+[![Build Status](https://github.com/alanshaw/it-length-prefixed/actions/workflows/main.yml/badge.svg)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/main.yml)
 ![Codecov](https://img.shields.io/codecov/c/gh/alanshaw/it-length-prefixed.svg)
 [![Dependency Status](https://status.david-dm.org/gh/alanshaw/it-length-prefixed.svg)](https://david-dm.org/alanshaw/it-length-prefixed)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
