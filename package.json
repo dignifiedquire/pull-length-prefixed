@@ -1,6 +1,6 @@
 {
   "name": "it-length-prefixed",
-  "version": "5.0.3",
+  "version": "6.0.0",
   "description": "Streaming length prefixed buffers with async iterables",
   "type": "module",
   "types": "./dist/src/index.d.ts",

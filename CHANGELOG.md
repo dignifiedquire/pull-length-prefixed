@@ -1,3 +1,14 @@
+## [6.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.3...v6.0.0) (2022-01-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* switch to named exports, ESM only
+
+### Features
+
+* convert to typescript ([#18](https://github.com/alanshaw/it-length-prefixed/issues/18)) ([0b97e95](https://github.com/alanshaw/it-length-prefixed/commit/0b97e95491cc6c68c39367ab70527c5c03f65bc6))
+
 ## [5.0.3](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.2...v5.0.3) (2021-07-07)
 
 
@@ -113,6 +124,3 @@ Signed-off-by: Alan Shaw <alan.shaw@protocol.ai>
 * improve tests and guards for failure cases ([2c43d59](https://github.com/alanshaw/it-length-prefixed/commit/2c43d59))
 * maybe this decode function will work ([3c0efc7](https://github.com/alanshaw/it-length-prefixed/commit/3c0efc7))
 * **decode:** add decodeFromReader method ([729dc2e](https://github.com/alanshaw/it-length-prefixed/commit/729dc2e))
-
-
-
