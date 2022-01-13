@@ -1,12 +1,8 @@
 # it-length-prefixed
 
-[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg)](http://ipn.io)
-[![](https://img.shields.io/badge/project-IPFS-blue.svg)](http://ipfs.io/)
-[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg)](http://webchat.freenode.net/?channels=%23ipfs)
-[![Build Status](https://github.com/alanshaw/it-length-prefixed/actions/workflows/main.yml/badge.svg)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/main.yml)
-![Codecov](https://img.shields.io/codecov/c/gh/alanshaw/it-length-prefixed.svg)
-[![Dependency Status](https://status.david-dm.org/gh/alanshaw/it-length-prefixed.svg)](https://david-dm.org/alanshaw/it-length-prefixed)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](https://github.com/feross/standard)
+[![Build Status](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml/badge.svg?branch=master)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml)
+[![Dependencies Status](https://david-dm.org/alanshaw/it-length-prefixed/status.svg)](https://david-dm.org/alanshaw/it-length-prefixed)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 > Streaming length prefixed buffers with async iterators
 
@@ -19,14 +15,14 @@ npm install it-length-prefixed
 ## Usage
 
 ```js
-const pipe = require('it-pipe')
-const lp = require('it-length-prefixed')
+import { pipe } from 'it-pipe'
+import * as lp from 'it-length-prefixed'
 
 const encoded = []
 
 // encode
 await pipe(
-  [Buffer.from('hello world')],
+  [uint8ArrayFromString('hello world')],
   lp.encode(),
   async source => {
     for await (const chunk of source) {
@@ -56,6 +52,24 @@ console.log(decoded)
 ```
 
 ## API
+
+```js
+import {
+  encode, decode
+} from 'it-length-prefixed'
+
+import {
+  encode,
+  MIN_POOL_SIZE,
+  DEFAULT_POOL_SIZE
+} from 'it-length-prefixed/encode'
+
+import {
+  decode,
+  MAX_LENGTH_LENGTH,
+  MAX_DATA_LENGTH
+} from 'it-length-prefixed/decode'
+```
 
 ### `encode([opts])`
 

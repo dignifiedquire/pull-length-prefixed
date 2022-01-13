@@ -1,36 +1,32 @@
-/* eslint-env mocha */
-'use strict'
+import { expect } from 'aegir/utils/chai.js'
+import { pipe } from 'it-pipe'
+import randomInt from 'random-int'
+import all from 'it-all'
+import varint from 'varint'
+import { toBuffer, times, someBytes } from './helpers/index.js'
+import * as lp from '../src/index.js'
+import { MIN_POOL_SIZE } from '../src/encode.js'
 
-const { Buffer } = require('buffer')
-const pipe = require('it-pipe')
-const { expect } = require('chai')
-const randomInt = require('random-int')
-const { collect } = require('streaming-iterables')
-const Varint = require('varint')
-const { toBuffer, times, someBytes } = require('./_helpers')
-
-const lp = require('../')
 const { int32BEEncode } = lp
-const { MIN_POOL_SIZE } = lp.encode
 
 describe('encode', () => {
   it('should encode length as prefix', async () => {
     const input = await Promise.all(times(randomInt(1, 10), someBytes))
-    const output = await pipe(input, lp.encode(), toBuffer, collect)
+    const output = await pipe(input, lp.encode(), toBuffer, async (source) => await all(source))
     output.forEach((o, i) => {
-      const length = Varint.decode(o)
+      const length = varint.decode(o)
       expect(length).to.equal(input[i].length)
-      expect(o.slice(Varint.decode.bytes)).to.deep.equal(input[i])
+      expect(o.slice(varint.decode.bytes)).to.deep.equal(input[i])
     })
   })
 
   it('should encode zero length as prefix', async () => {
-    const input = [Buffer.alloc(0)]
-    const output = await pipe(input, lp.encode(), toBuffer, collect)
+    const input = [new Uint8Array(0)]
+    const output = await pipe(input, lp.encode(), toBuffer, async (source) => await all(source))
     output.forEach((o, i) => {
-      const length = Varint.decode(o)
+      const length = varint.decode(o)
       expect(length).to.equal(input[i].length)
-      expect(o.slice(Varint.decode.bytes)).to.deep.equal(input[i])
+      expect(o.slice(varint.decode.bytes)).to.deep.equal(input[i])
     })
   })
 
@@ -40,12 +36,12 @@ describe('encode', () => {
       input,
       lp.encode({ poolSize: MIN_POOL_SIZE * 1.5 }),
       toBuffer,
-      collect
+      async (source) => await all(source)
     )
     output.forEach((o, i) => {
-      const length = Varint.decode(o)
+      const length = varint.decode(o)
       expect(length).to.equal(input[i].length)
-      expect(o.slice(Varint.decode.bytes)).to.deep.equal(input[i])
+      expect(o.slice(varint.decode.bytes)).to.deep.equal(input[i])
     })
   })
 
@@ -55,7 +51,7 @@ describe('encode', () => {
       input,
       lp.encode({ lengthEncoder: int32BEEncode }),
       toBuffer,
-      collect
+      async (source) => await all(source)
     )
     output.forEach((o, i) => {
       const length = o.readInt32BE(0)

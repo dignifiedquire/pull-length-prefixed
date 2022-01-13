@@ -1,12 +1,8 @@
-/* eslint-env mocha */
-'use strict'
+import { expect } from 'aegir/utils/chai.js'
+import varint from 'varint'
+import { someBytes } from './helpers/index.js'
+import * as lp from '../src/index.js'
 
-const { Buffer } = require('buffer')
-const { expect } = require('chai')
-const Varint = require('varint')
-const { someBytes } = require('./_helpers')
-
-const lp = require('../')
 const { int32BEEncode } = lp
 
 describe('encode.single', () => {
@@ -14,18 +10,18 @@ describe('encode.single', () => {
     const input = await someBytes()
     const output = lp.encode.single(input)
 
-    const length = Varint.decode(output.slice())
+    const length = varint.decode(output.slice())
     expect(length).to.equal(input.length)
-    expect(output.slice(Varint.decode.bytes)).to.deep.equal(input)
+    expect(output.slice(varint.decode.bytes)).to.deep.equal(input)
   })
 
   it('should encode zero length as prefix', () => {
-    const input = Buffer.alloc(0)
+    const input = new Uint8Array(0)
     const output = lp.encode.single(input)
 
-    const length = Varint.decode(output.slice())
+    const length = varint.decode(output.slice())
     expect(length).to.equal(input.length)
-    expect(output.slice(Varint.decode.bytes)).to.deep.equal(input)
+    expect(output.slice(varint.decode.bytes)).to.deep.equal(input)
   })
 
   it('should encode with custom length encoder (int32BE)', async () => {
