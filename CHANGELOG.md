@@ -1,3 +1,10 @@
+### [6.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v6.0.0...v6.0.1) (2022-01-13)
+
+
+### Bug Fixes
+
+* emit uint8arrays ([#19](https://github.com/alanshaw/it-length-prefixed/issues/19)) ([a6c59df](https://github.com/alanshaw/it-length-prefixed/commit/a6c59df6dab930ee23e7858e7ce7b43094b31efb))
+
 ## [6.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v5.0.3...v6.0.0) (2022-01-13)
 
 
