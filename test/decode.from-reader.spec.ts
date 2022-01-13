@@ -4,7 +4,7 @@ import { reader } from 'it-reader'
 import randomBytes from 'iso-random-stream/src/random.js'
 import all from 'it-all'
 import varint from 'varint'
-import { toBuffer, times, someBytes } from './helpers/index.js'
+import { times, someBytes } from './helpers/index.js'
 import * as lp from '../src/index.js'
 
 describe('decode from reader', () => {
@@ -13,18 +13,16 @@ describe('decode from reader', () => {
     const stream = reader(
       pipe(
         input,
-        lp.encode(),
-        toBuffer
+        lp.encode()
       )
     )
 
     const output = await pipe(
       lp.decode.fromReader(stream),
-      toBuffer,
       async (source) => await all(source)
     )
 
-    expect(output).to.eql(input)
+    expect(output).to.deep.equal(input)
   })
 
   it('should not decode a message that is too long', async () => {
@@ -41,7 +39,6 @@ describe('decode from reader', () => {
     await expect(
       pipe(
         lp.decode.fromReader(stream, { maxDataLength: 100 }),
-        toBuffer,
         async (source) => await all(source)
       )
     ).to.eventually.be.rejected.with.property('code', 'ERR_MSG_DATA_TOO_LONG')

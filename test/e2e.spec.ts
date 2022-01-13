@@ -3,7 +3,6 @@ import varint from 'varint'
 import { pipe } from 'it-pipe'
 import { block } from 'it-block'
 import { pushable } from 'it-pushable'
-import { toBuffer } from './helpers/index.js'
 import all from 'it-all'
 import map from 'it-map'
 import each from 'it-foreach'
@@ -22,7 +21,7 @@ describe('e2e', () => {
       uint8ArrayFromString('world')
     ]
 
-    const encoded = await pipe(input, lp.encode(), toBuffer, async (source) => await all(source))
+    const encoded = await pipe(input, lp.encode(), async (source) => await all(source))
 
     const helloLen = varint.encode('hello '.length)
     const worldLen = varint.encode('world'.length)
@@ -40,7 +39,7 @@ describe('e2e', () => {
       ])
     ])
 
-    const output = await pipe(encoded, lp.decode(), toBuffer, async (source) => await all(source))
+    const output = await pipe(encoded, lp.decode(), async (source) => await all(source))
 
     expect(input).to.be.eql(output)
   })
@@ -51,7 +50,7 @@ describe('e2e', () => {
       uint8ArrayFromString('world')
     ]
 
-    const encoded = await pipe(input, lp.encode(), toBuffer, async (source) => await all(source))
+    const encoded = await pipe(input, lp.encode(), async (source) => await all(source))
 
     const helloLen = varint.encode('hello '.length)
     const worldLen = varint.encode('world'.length)
@@ -75,7 +74,7 @@ describe('e2e', () => {
   })
 
   it('zero length', async () => {
-    const encoded = await pipe([], lp.encode(), toBuffer, async (source) => await all(source))
+    const encoded = await pipe([], lp.encode(), async (source) => await all(source))
 
     expect(encoded).to.be.eql([])
 
@@ -83,7 +82,6 @@ describe('e2e', () => {
       [new Uint8Array(0), uint8ArrayFromString('more data')],
       lp.encode(),
       lp.decode(),
-      toBuffer,
       async (source) => await all(source)
     )
 
@@ -115,7 +113,6 @@ describe('e2e', () => {
       p,
       lp.encode(),
       lp.decode(),
-      toBuffer,
       async (source) => await all(source)
     )
 
@@ -156,10 +153,8 @@ describe('e2e', () => {
       const res = await pipe(
         input,
         lp.encode(),
-        toBuffer,
         block(size, { noPad: true }),
         lp.decode(),
-        toBuffer,
         async (source) => await all(source)
       )
 
@@ -193,7 +188,6 @@ describe('e2e', () => {
         (source) => delay(source, 10),
         lp.encode(),
         lp.decode(),
-        toBuffer,
         async (source) => await all(source)
       )
 
@@ -206,7 +200,6 @@ describe('e2e', () => {
         lp.encode(),
         (source) => delay(source, 10),
         lp.decode(),
-        toBuffer,
         async (source) => await all(source)
       )
 
@@ -218,7 +211,6 @@ describe('e2e', () => {
         input,
         lp.encode({ lengthEncoder: int32BEEncode }),
         lp.decode({ lengthDecoder: int32BEDecode }),
-        toBuffer,
         async (source) => await all(source)
       )
 

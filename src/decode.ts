@@ -11,7 +11,7 @@ export interface ReadState {
 
 export interface DecoderOptions {
   lengthDecoder?: LengthDecoderFunction
-  onData?: (data: BufferList | Uint8Array) => void
+  onData?: (data: Uint8Array) => void
   onLength?: (length: number) => void
   maxLengthLength?: number
   maxDataLength?: number
@@ -34,7 +34,7 @@ export const MAX_LENGTH_LENGTH = 8 // Varint.encode(Number.MAX_SAFE_INTEGER).len
 // Maximum length of the data section of the message
 export const MAX_DATA_LENGTH = 1024 * 1024 * 4
 
-const Empty = new BufferList([])
+const empty = new BufferList([])
 const ReadModes = { LENGTH: 'readLength', DATA: 'readData' }
 
 const ReadHandlers: Record<string, ReadHandler> = {
@@ -71,11 +71,7 @@ const ReadHandlers: Record<string, ReadHandler> = {
     }
 
     if (dataLength <= 0) {
-      if (options?.onData != null) {
-        options.onData(Empty)
-      }
-
-      return { mode: ReadModes.LENGTH, chunk, buffer, data: Empty }
+      return { mode: ReadModes.LENGTH, chunk, buffer, data: empty }
     }
 
     return { mode: ReadModes.DATA, chunk, buffer, state: { dataLength }, data: undefined }
@@ -98,16 +94,12 @@ const ReadHandlers: Record<string, ReadHandler> = {
     const nextChunk = buffer.length > dataLength ? buffer.shallowSlice(dataLength) : undefined
     buffer = new BufferList()
 
-    if ((options?.onData) != null) {
-      options.onData(data)
-    }
-
     return { mode: ReadModes.LENGTH, chunk: nextChunk, buffer, state: undefined, data }
   }
 }
 
-export function decode (options?: DecoderOptions): Transform<BufferList | Uint8Array, BufferList> {
-  const decoder = async function * (source: Source<BufferList | Uint8Array>): Source<BufferList> {
+export function decode (options?: DecoderOptions): Transform<BufferList | Uint8Array, Uint8Array> {
+  const decoder = async function * (source: Source<BufferList | Uint8Array>): Source<Uint8Array> {
     let buffer = new BufferList()
     let mode = ReadModes.LENGTH // current parsing mode
     let state: ReadState | undefined // accumulated state for the current mode
@@ -127,7 +119,13 @@ export function decode (options?: DecoderOptions): Transform<BufferList | Uint8A
         state = result.state
 
         if (result.data != null) {
-          yield result.data
+          const data = result.data.slice()
+
+          if (options?.onData != null) {
+            options.onData(data)
+          }
+
+          yield data
         }
       }
     }
