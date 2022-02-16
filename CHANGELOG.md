@@ -1,3 +1,14 @@
+## [7.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v6.0.1...v7.0.0) (2022-02-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* where `BufferList`s were returned, now `Uint8ArrayList`s are
+
+### Bug Fixes
+
+* swap bl for uint8arraylist ([#21](https://github.com/alanshaw/it-length-prefixed/issues/21)) ([a836df3](https://github.com/alanshaw/it-length-prefixed/commit/a836df3d28d5066d5b5286e6239e1542ce7cc9ca))
+
 ### [6.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v6.0.0...v6.0.1) (2022-01-13)
 
 
