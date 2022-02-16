@@ -2,15 +2,41 @@
   "name": "it-length-prefixed",
   "version": "6.0.1",
   "description": "Streaming length prefixed buffers with async iterables",
+  "author": "Alan Shaw",
+  "license": "Apache-2.0 OR MIT",
+  "homepage": "https://github.com/alanshaw/it-length-prefixed#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanshaw/it-length-prefixed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alanshaw/it-length-prefixed/issues"
+  },
+  "keywords": [
+    "async",
+    "iterable",
+    "iterator",
+    "length-prefixed",
+    "length-prefixed-stream",
+    "varint"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
   "type": "module",
   "types": "./dist/src/index.d.ts",
   "typesVersions": {
     "*": {
       "*": [
         "*",
-        "*/index",
         "dist/*",
-        "dist/*/index",
+        "dist/src/*",
+        "dist/src/*/index"
+      ],
+      "src/*": [
+        "*",
+        "dist/*",
         "dist/src/*",
         "dist/src/*/index"
       ]
@@ -26,11 +52,11 @@
     ".": {
       "import": "./dist/src/index.js"
     },
-    "./encode": {
-      "import": "./dist/src/encode.js"
-    },
     "./decode": {
       "import": "./dist/src/decode.js"
+    },
+    "./encode": {
+      "import": "./dist/src/encode.js"
     }
   },
   "eslintConfig": {
@@ -134,42 +160,23 @@
     "test:electron-main": "npm run test -- -t electron-main",
     "release": "semantic-release"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alanshaw/it-length-prefixed.git"
-  },
-  "keywords": [
-    "varint",
-    "async",
-    "iterable",
-    "iterator",
-    "length-prefixed-stream",
-    "length-prefixed"
-  ],
-  "author": "Alan Shaw",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/alanshaw/it-length-prefixed/issues"
-  },
-  "homepage": "https://github.com/alanshaw/it-length-prefixed#readme",
   "dependencies": {
-    "bl": "^5.0.0",
     "err-code": "^3.0.1",
     "it-stream-types": "^1.0.4",
+    "uint8arraylist": "^1.2.0",
     "varint": "^6.0.0"
   },
   "devDependencies": {
-    "@types/bl": "^5.0.1",
     "@types/varint": "^6.0.0",
     "aegir": "^36.1.3",
     "iso-random-stream": "^2.0.0",
     "it-all": "^1.0.6",
-    "it-block": "^4.0.0",
+    "it-block": "^5.0.0",
     "it-foreach": "^0.1.1",
     "it-map": "^1.0.6",
     "it-pipe": "^2.0.2",
     "it-pushable": "^2.0.1",
-    "it-reader": "^4.0.1",
+    "it-reader": "^5.0.0",
     "p-defer": "^4.0.0",
     "random-int": "^3.0.0",
     "uint8arrays": "^3.0.0"

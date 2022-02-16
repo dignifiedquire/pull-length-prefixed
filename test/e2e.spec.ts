@@ -7,7 +7,7 @@ import all from 'it-all'
 import map from 'it-map'
 import each from 'it-foreach'
 import type { Source } from 'it-stream-types'
-import type BufferList from 'bl/BufferList.js'
+import type { Uint8ArrayList } from 'uint8arraylist'
 import * as lp from '../src/index.js'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
@@ -219,6 +219,6 @@ describe('e2e', () => {
   })
 })
 
-function delay (source: Source<Uint8Array | BufferList>, time: number) {
+function delay (source: Source<Uint8Array | Uint8ArrayList>, time: number) {
   return each(source, async () => await new Promise(resolve => setTimeout(resolve, time)))
 }

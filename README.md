@@ -26,7 +26,7 @@ await pipe(
   lp.encode(),
   async source => {
     for await (const chunk of source) {
-      encoded.push(chunk.slice()) // (.slice converts BufferList to Buffer)
+      encoded.push(chunk.slice()) // (.slice converts Uint8ArrayList to Uint8Array)
     }
   }
 )
@@ -42,7 +42,7 @@ await pipe(
   lp.decode(),
   async source => {
     for await (const chunk of source) {
-      decoded.push(chunk.slice()) // (.slice converts BufferList to Buffer)
+      decoded.push(chunk.slice()) // (.slice converts Uint8ArrayList to Uint8Array)
     }
   }
 )
@@ -80,15 +80,15 @@ import {
     - The following additional length encoders are available:
       - **int32BE** - `const { int32BEEncode } = require('it-length-prefixed')`
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects. All messages will be prefixed with a length, determined by the `lengthEncoder` function.
+Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects. All messages will be prefixed with a length, determined by the `lengthEncoder` function.
 
 ### `encode.single(chunk, [opts])`
 
-- `chunk: Buffer|BufferList` chunk to encode
+- `chunk: Buffer|Uint8ArrayList` chunk to encode
 - `opts: Object`, optional
     - `lengthEncoder: Function`: See description above. Note that this encoder will _not_ be passed a `target` or `offset` and so will need to allocate a buffer to write to.
 
-Returns a `BufferList` containing the encoded chunk.
+Returns a `Uint8ArrayList` containing the encoded chunk.
 
 ### `decode([opts])`
 
@@ -96,12 +96,12 @@ Returns a `BufferList` containing the encoded chunk.
   - `maxLengthLength`: If provided, will not decode messages whose length section exceeds the size specified, if omitted will use the default of 147 bytes.
   - `maxDataLength`: If provided, will not decode messages whose data section exceeds the size specified, if omitted will use the default of 4MB.
   - `onLength(len: Number)`: Called for every length prefix that is decoded from the stream
-  - `onData(data: BufferList)`: Called for every chunk of data that is decoded from the stream
-  - `lengthDecoder: Function`: A function that decodes the length that prefixes each message. By default this is a [`varint`](https://www.npmjs.com/package/varint) decoder. It is passed some `data` to decode which is a [`BufferList`](https://www.npmjs.com/package/bl). The function should decode the length, set the `lengthDecoder.bytes` value (the number of bytes read) and return the length. If the length cannot be decoded, the function should throw a `RangeError`.
+  - `onData(data: Uint8ArrayList)`: Called for every chunk of data that is decoded from the stream
+  - `lengthDecoder: Function`: A function that decodes the length that prefixes each message. By default this is a [`varint`](https://www.npmjs.com/package/varint) decoder. It is passed some `data` to decode which is a [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist). The function should decode the length, set the `lengthDecoder.bytes` value (the number of bytes read) and return the length. If the length cannot be decoded, the function should throw a `RangeError`.
     - The following additional length decoders are available:
       - **int32BE** - `const { int32BEDecode } = require('it-length-prefixed')`
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
+Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
 
 ### `decode.fromReader(reader, [opts])`
 
@@ -111,10 +111,10 @@ Behaves like `decode` except it only reads the exact number of bytes needed for 
 - `opts: Object`, optional
   - `maxLengthLength`: If provided, will not decode messages whose length section exceeds the size specified, if omitted will use the default of 147 bytes.
   - `maxDataLength`: If provided, will not decode messages whose data section exceeds the size specified, if omitted will use the default of 4MB.
-  - `onData(data: BufferList)`: Called for every chunk of data that is decoded from the stream
+  - `onData(data: Uint8ArrayList)`: Called for every chunk of data that is decoded from the stream
   - `lengthEncoder: Function`: See description above.
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`BufferList`](https://www.npmjs.com/package/bl) objects.
+Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
 
 ## Contribute
 

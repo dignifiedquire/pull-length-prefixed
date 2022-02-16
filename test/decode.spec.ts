@@ -4,7 +4,7 @@ import randomInt from 'random-int'
 import randomBytes from 'iso-random-stream/src/random.js'
 import all from 'it-all'
 import varint from 'varint'
-import BufferList from 'bl/BufferList.js'
+import { Uint8ArrayList } from 'uint8arraylist'
 import defer from 'p-defer'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import { times } from './helpers/index.js'
@@ -37,16 +37,14 @@ describe('decode', () => {
     expect(output).to.deep.equal(new Uint8Array(0))
   })
 
-  it('should decode single message as BufferList', async () => {
+  it('should decode single message as Uint8ArrayList', async () => {
     const byteLength = randomInt(1, 64)
     const bytes = await randomBytes(byteLength)
 
-    const input = new BufferList([
-      // @ts-expect-error bl types are broken
+    const input = new Uint8ArrayList(
       Uint8Array.from(varint.encode(byteLength)),
-      // @ts-expect-error bl types are broken
       bytes
-    ])
+    )
 
     const [output] = await pipe([input], lp.decode(), async (source) => await all(source))
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
@@ -167,7 +165,7 @@ describe('decode', () => {
       }
     }
 
-    const onData = (data: BufferList | Uint8Array) => {
+    const onData = (data: Uint8ArrayList | Uint8Array) => {
       const expectedData = expectedDatas.shift()
 
       expect(data.slice()).to.deep.equal(expectedData)

@@ -28,7 +28,8 @@ describe('encode.single', () => {
     const input = await someBytes()
     const output = lp.encode.single(input, { lengthEncoder: int32BEEncode })
 
-    const length = output.readInt32BE(0)
+    const view = new DataView(output.slice().buffer)
+    const length = view.getInt32(0, false)
     expect(length).to.equal(input.length)
   })
 })

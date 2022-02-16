@@ -1,4 +1,4 @@
-import BufferList from 'bl/BufferList.js'
+import { Uint8ArrayList } from 'uint8arraylist'
 import { varintDecode } from './varint-decode.js'
 import errCode from 'err-code'
 import type { LengthDecoderFunction } from './varint-decode.js'
@@ -19,14 +19,14 @@ export interface DecoderOptions {
 
 export interface ReadResult {
   mode: string
-  chunk?: BufferList
-  buffer: BufferList
+  chunk?: Uint8ArrayList
+  buffer: Uint8ArrayList
   state?: ReadState
-  data?: BufferList
+  data?: Uint8ArrayList
 }
 
 interface ReadHandler {
-  (chunk: BufferList, buffer: BufferList, state?: ReadState, options?: DecoderOptions): ReadResult
+  (chunk: Uint8ArrayList, buffer: Uint8ArrayList, state?: ReadState, options?: DecoderOptions): ReadResult
 }
 
 // Maximum length of the length section of the message
@@ -34,7 +34,7 @@ export const MAX_LENGTH_LENGTH = 8 // Varint.encode(Number.MAX_SAFE_INTEGER).len
 // Maximum length of the data section of the message
 export const MAX_DATA_LENGTH = 1024 * 1024 * 4
 
-const empty = new BufferList([])
+const empty = new Uint8ArrayList()
 const ReadModes = { LENGTH: 'readLength', DATA: 'readData' }
 
 const ReadHandlers: Record<string, ReadHandler> = {
@@ -44,7 +44,7 @@ const ReadHandlers: Record<string, ReadHandler> = {
     const maxDataLength = options?.maxDataLength ?? MAX_DATA_LENGTH
 
     // console.log(ReadModes.LENGTH, chunk.length)
-    buffer = buffer.append(chunk)
+    buffer.append(chunk)
 
     let dataLength
     try {
@@ -63,8 +63,8 @@ const ReadHandlers: Record<string, ReadHandler> = {
       throw errCode(new Error('message data too long'), 'ERR_MSG_DATA_TOO_LONG')
     }
 
-    chunk = buffer.shallowSlice(lengthDecoder.bytes)
-    buffer = new BufferList()
+    chunk = buffer.subarray(lengthDecoder.bytes)
+    buffer = new Uint8ArrayList()
 
     if (options?.onLength != null) {
       options.onLength(dataLength)
@@ -78,7 +78,7 @@ const ReadHandlers: Record<string, ReadHandler> = {
   },
 
   [ReadModes.DATA]: (chunk, buffer, state, options?) => {
-    buffer = buffer.append(chunk)
+    buffer.append(chunk)
 
     if (state == null) {
       throw new Error('state is required')
@@ -89,24 +89,23 @@ const ReadHandlers: Record<string, ReadHandler> = {
     }
 
     const { dataLength } = state
-    const data = buffer.shallowSlice(0, dataLength)
+    const data = buffer.subarray(0, dataLength)
 
-    const nextChunk = buffer.length > dataLength ? buffer.shallowSlice(dataLength) : undefined
-    buffer = new BufferList()
+    const nextChunk = buffer.length > dataLength ? buffer.subarray(dataLength) : undefined
+    buffer = new Uint8ArrayList()
 
     return { mode: ReadModes.LENGTH, chunk: nextChunk, buffer, state: undefined, data }
   }
 }
 
-export function decode (options?: DecoderOptions): Transform<BufferList | Uint8Array, Uint8Array> {
-  const decoder = async function * (source: Source<BufferList | Uint8Array>): Source<Uint8Array> {
-    let buffer = new BufferList()
+export function decode (options?: DecoderOptions): Transform<Uint8ArrayList | Uint8Array, Uint8Array> {
+  const decoder = async function * (source: Source<Uint8ArrayList | Uint8Array>): Source<Uint8Array> {
+    let buffer = new Uint8ArrayList()
     let mode = ReadModes.LENGTH // current parsing mode
     let state: ReadState | undefined // accumulated state for the current mode
 
     for await (const chunk of source) {
-      // @ts-expect-error bl types are broken
-      let nextChunk: BufferList | undefined = new BufferList(chunk)
+      let nextChunk: Uint8ArrayList | undefined = new Uint8ArrayList(chunk)
 
       // Each chunk may contain multiple messages - keep calling handler for the
       // current parsing mode until all handlers have consumed the chunk.
