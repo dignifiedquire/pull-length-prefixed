@@ -1,3 +1,10 @@
+### [7.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v7.0.0...v7.0.1) (2022-03-08)
+
+
+### Bug Fixes
+
+* do not create an array to pass in to uint8arraylist ([#22](https://github.com/alanshaw/it-length-prefixed/issues/22)) ([94c4f03](https://github.com/alanshaw/it-length-prefixed/commit/94c4f0343c1b5770ef064b79553789e47ad1d1e9))
+
 ## [7.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v6.0.1...v7.0.0) (2022-02-16)
 
 
