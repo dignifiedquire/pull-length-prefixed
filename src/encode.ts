@@ -43,5 +43,5 @@ export function encode (options?: EncoderOptions): Transform<Uint8ArrayList | Ui
 encode.single = (chunk: Uint8ArrayList | Uint8Array, options?: EncoderOptions) => {
   options = options ?? {}
   const encodeLength = options.lengthEncoder ?? varintEncode
-  return new Uint8ArrayList(...[encodeLength(chunk.length), chunk.slice()])
+  return new Uint8ArrayList(encodeLength(chunk.length), chunk.slice())
 }
