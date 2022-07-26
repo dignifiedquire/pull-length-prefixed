@@ -1,4 +1,4 @@
-import { expect } from 'aegir/utils/chai.js'
+import { expect } from 'aegir/chai'
 import { pipe } from 'it-pipe'
 import randomInt from 'random-int'
 import randomBytes from 'iso-random-stream/src/random.js'

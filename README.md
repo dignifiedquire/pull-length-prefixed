@@ -1,15 +1,27 @@
-# it-length-prefixed
+# it-length-prefixed <!-- omit in toc -->
 
-[![Build Status](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml/badge.svg?branch=master)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml)
-[![Dependencies Status](https://david-dm.org/alanshaw/it-length-prefixed/status.svg)](https://david-dm.org/alanshaw/it-length-prefixed)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![codecov](https://img.shields.io/codecov/c/github/alanshaw/it-length-prefixed.svg?style=flat-square)](https://codecov.io/gh/alanshaw/it-length-prefixed)
+[![CI](https://img.shields.io/github/workflow/status/libp2p/js-libp2p-interfaces/test%20&%20maybe%20release/master?style=flat-square)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml)
 
-> Streaming length prefixed buffers with async iterators
+> Streaming length prefixed buffers with async iterables
+
+## Table of contents <!-- omit in toc -->
+
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+  - [`encode([opts])`](#encodeopts)
+  - [`encode.single(chunk, [opts])`](#encodesinglechunk-opts)
+  - [`decode([opts])`](#decodeopts)
+  - [`decode.fromReader(reader, [opts])`](#decodefromreaderreader-opts)
+- [Contribute](#contribute)
+- [License](#license)
+- [Contribution](#contribution)
 
 ## Install
 
-```sh
-npm install it-length-prefixed
+```console
+$ npm i it-length-prefixed
 ```
 
 ## Usage
@@ -86,7 +98,7 @@ Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef5
 
 - `chunk: Buffer|Uint8ArrayList` chunk to encode
 - `opts: Object`, optional
-    - `lengthEncoder: Function`: See description above. Note that this encoder will _not_ be passed a `target` or `offset` and so will need to allocate a buffer to write to.
+  - `lengthEncoder: Function`: See description above. Note that this encoder will *not* be passed a `target` or `offset` and so will need to allocate a buffer to write to.
 
 Returns a `Uint8ArrayList` containing the encoded chunk.
 
@@ -122,4 +134,11 @@ PRs and issues gladly accepted! Check out the [issues](https://github.com/alansh
 
 ## License
 
-MIT © 2016 Friedel Ziegelmayer
+Licensed under either of
+
+- Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.

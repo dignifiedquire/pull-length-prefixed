@@ -1,4 +1,4 @@
-import { expect } from 'aegir/utils/chai.js'
+import { expect } from 'aegir/chai'
 import varint from 'varint'
 import { pipe } from 'it-pipe'
 import { block } from 'it-block'
@@ -89,7 +89,7 @@ describe('e2e', () => {
   })
 
   it('push time based', async () => {
-    const p = pushable<Uint8Array>()
+    const p = pushable()
     const input: Uint8Array[] = []
     let i = 0
 

@@ -1,4 +1,4 @@
-import { expect } from 'aegir/utils/chai.js'
+import { expect } from 'aegir/chai'
 import varint from 'varint'
 import { someBytes } from './helpers/index.js'
 import * as lp from '../src/index.js'
