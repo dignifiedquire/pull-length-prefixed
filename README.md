@@ -71,9 +71,7 @@ import {
 } from 'it-length-prefixed'
 
 import {
-  encode,
-  MIN_POOL_SIZE,
-  DEFAULT_POOL_SIZE
+  encode
 } from 'it-length-prefixed/encode'
 
 import {
@@ -86,11 +84,7 @@ import {
 ### `encode([opts])`
 
 - `opts: Object`, optional
-  - `poolSize: 10 * 1024`: Buffer pool size to allocate up front
-  - `minPoolSize: 8`: The minimum size the pool can be before it is re-allocated. Note: it is important this value is greater than the maximum value that can be encoded by the `lengthEncoder` (see the next option). Since encoded lengths are written into a buffer pool, there needs to be enough space to hold the encoded value.
   - `lengthEncoder: Function`: A function that encodes the length that will prefix each message. By default this is a [`varint`](https://www.npmjs.com/package/varint) encoder. It is passed a `value` to encode, an (optional) `target` buffer to write to and an (optional) `offset` to start writing from. The function should encode the `value` into the `target` (or alloc a new Buffer if not specified), set the `lengthEncoder.bytes` value (the number of bytes written) and return the `target`.
-    - The following additional length encoders are available:
-      - **int32BE** - `const { int32BEEncode } = require('it-length-prefixed')`
 
 Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects. All messages will be prefixed with a length, determined by the `lengthEncoder` function.
 
@@ -110,8 +104,6 @@ Returns a `Uint8ArrayList` containing the encoded chunk.
   - `onLength(len: Number)`: Called for every length prefix that is decoded from the stream
   - `onData(data: Uint8ArrayList)`: Called for every chunk of data that is decoded from the stream
   - `lengthDecoder: Function`: A function that decodes the length that prefixes each message. By default this is a [`varint`](https://www.npmjs.com/package/varint) decoder. It is passed some `data` to decode which is a [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist). The function should decode the length, set the `lengthDecoder.bytes` value (the number of bytes read) and return the length. If the length cannot be decoded, the function should throw a `RangeError`.
-    - The following additional length decoders are available:
-      - **int32BE** - `const { int32BEDecode } = require('it-length-prefixed')`
 
 Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
 

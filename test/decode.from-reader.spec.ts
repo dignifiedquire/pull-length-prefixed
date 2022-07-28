@@ -6,6 +6,8 @@ import all from 'it-all'
 import varint from 'varint'
 import { times, someBytes } from './helpers/index.js'
 import * as lp from '../src/index.js'
+import { Uint8ArrayList } from 'uint8arraylist'
+import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 
 describe('decode from reader', () => {
   it('should be able to decode from an it-reader', async () => {
@@ -19,10 +21,10 @@ describe('decode from reader', () => {
 
     const output = await pipe(
       lp.decode.fromReader(stream),
-      async (source) => await all(source)
+      async (source) => new Uint8ArrayList(...await all(source))
     )
 
-    expect(output).to.deep.equal(input)
+    expect(output.slice()).to.equalBytes(uint8ArrayConcat(input))
   })
 
   it('should not decode a message that is too long', async () => {

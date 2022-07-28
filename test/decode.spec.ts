@@ -10,8 +10,7 @@ import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import { times } from './helpers/index.js'
 import * as lp from '../src/index.js'
 import { MAX_LENGTH_LENGTH, MAX_DATA_LENGTH } from '../src/decode.js'
-
-const { int32BEDecode } = lp
+import { int32BEDecode } from './helpers/int32BE-decode.js'
 
 describe('decode', () => {
   it('should decode single message', async () => {
@@ -34,7 +33,7 @@ describe('decode', () => {
     ])
 
     const [output] = await pipe([input], lp.decode(), async (source) => await all(source))
-    expect(output).to.deep.equal(new Uint8Array(0))
+    expect(output.slice()).to.equalBytes(new Uint8Array(0))
   })
 
   it('should decode single message as Uint8ArrayList', async () => {

@@ -7,12 +7,12 @@ import all from 'it-all'
 import map from 'it-map'
 import each from 'it-foreach'
 import type { Source } from 'it-stream-types'
-import type { Uint8ArrayList } from 'uint8arraylist'
+import { Uint8ArrayList } from 'uint8arraylist'
 import * as lp from '../src/index.js'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string'
-
-const { int32BEEncode, int32BEDecode } = lp
+import { int32BEEncode } from './helpers/int32BE-encode.js'
+import { int32BEDecode } from './helpers/int32BE-decode.js'
 
 describe('e2e', () => {
   it('basics', async () => {
@@ -21,27 +21,35 @@ describe('e2e', () => {
       uint8ArrayFromString('world')
     ]
 
-    const encoded = await pipe(input, lp.encode(), async (source) => await all(source))
+    const encoded = await pipe(
+      input,
+      lp.encode(),
+      async (source) => new Uint8ArrayList(...await all(source))
+    )
 
     const helloLen = varint.encode('hello '.length)
     const worldLen = varint.encode('world'.length)
 
     expect(
-      encoded
-    ).to.be.eql([
+      encoded.slice()
+    ).to.equalBytes(
       uint8ArrayConcat([
         Uint8Array.from(helloLen),
-        uint8ArrayFromString('hello ')
-      ]),
-      uint8ArrayConcat([
+        uint8ArrayFromString('hello '),
         Uint8Array.from(worldLen),
         uint8ArrayFromString('world')
       ])
-    ])
+    )
 
-    const output = await pipe(encoded, lp.decode(), async (source) => await all(source))
+    const output = await pipe(
+      encoded,
+      lp.decode(),
+      async (source) => new Uint8ArrayList(...await all(source))
+    )
 
-    expect(input).to.be.eql(output)
+    expect(output.slice()).to.equalBytes(
+      uint8ArrayConcat(input)
+    )
   })
 
   it('max length', async () => {
@@ -50,23 +58,25 @@ describe('e2e', () => {
       uint8ArrayFromString('world')
     ]
 
-    const encoded = await pipe(input, lp.encode(), async (source) => await all(source))
+    const encoded = await pipe(
+      input,
+      lp.encode(),
+      async (source) => new Uint8ArrayList(...await all(source))
+    )
 
     const helloLen = varint.encode('hello '.length)
     const worldLen = varint.encode('world'.length)
 
     expect(
-      encoded
-    ).to.be.eql([
+      encoded.slice()
+    ).to.equalBytes(
       uint8ArrayConcat([
         Uint8Array.from(helloLen),
-        uint8ArrayFromString('hello ')
-      ]),
-      uint8ArrayConcat([
+        uint8ArrayFromString('hello '),
         Uint8Array.from(worldLen),
         uint8ArrayFromString('world')
       ])
-    ])
+    )
 
     await expect(
       pipe(encoded, lp.decode({ maxDataLength: 1 }), async (source) => await all(source))
@@ -82,10 +92,15 @@ describe('e2e', () => {
       [new Uint8Array(0), uint8ArrayFromString('more data')],
       lp.encode(),
       lp.decode(),
-      async (source) => await all(source)
+      async (source) => new Uint8ArrayList(...await all(source))
     )
 
-    expect(decoded).to.be.eql([new Uint8Array(0), uint8ArrayFromString('more data')])
+    expect(decoded.slice()).to.equalBytes(
+      uint8ArrayConcat([
+        new Uint8Array(0),
+        uint8ArrayFromString('more data')]
+      )
+    )
   })
 
   it('push time based', async () => {
@@ -113,10 +128,12 @@ describe('e2e', () => {
       p,
       lp.encode(),
       lp.decode(),
-      async (source) => await all(source)
+      async (source) => new Uint8ArrayList(...await all(source))
     )
 
-    expect(input).to.be.eql(output)
+    expect(output.slice()).to.equalBytes(
+      uint8ArrayConcat(input)
+    )
   })
 
   it('invalid prefix', async () => {
@@ -155,16 +172,18 @@ describe('e2e', () => {
         lp.encode(),
         block(size, { noPad: true }),
         lp.decode(),
-        async (source) => await all(source)
+        async (source) => new Uint8ArrayList(...await all(source))
       )
 
       expect(
-        res
-      ).to.be.eql([
-        uint8ArrayFromString('hello '),
-        uint8ArrayFromString('world'),
-        longBuffer
-      ])
+        res.slice()
+      ).to.equalBytes(
+        uint8ArrayConcat([
+          uint8ArrayFromString('hello '),
+          uint8ArrayFromString('world'),
+          longBuffer
+        ])
+      )
     })
   })
 
@@ -173,7 +192,7 @@ describe('e2e', () => {
 
     before(() => {
       for (let j = 0; j < 200; j++) {
-        const a = []
+        const a: string[] = []
         for (let i = 0; i < 200; i++) {
           a[i] = String(i)
         }
@@ -188,10 +207,10 @@ describe('e2e', () => {
         (source) => delay(source, 10),
         lp.encode(),
         lp.decode(),
-        async (source) => await all(source)
+        async (source) => new Uint8ArrayList(...await all(source))
       )
 
-      expect(res).to.be.eql(input)
+      expect(res.slice()).to.equalBytes(uint8ArrayConcat(input))
     })
 
     it('decode - slow in - fast out', async () => {
@@ -200,10 +219,10 @@ describe('e2e', () => {
         lp.encode(),
         (source) => delay(source, 10),
         lp.decode(),
-        async (source) => await all(source)
+        async (source) => new Uint8ArrayList(...await all(source))
       )
 
-      expect(res).to.be.eql(input)
+      expect(res.slice()).to.equalBytes(uint8ArrayConcat(input))
     })
 
     it('encode/decode with custom length encoder/decoder', async () => {
@@ -211,10 +230,10 @@ describe('e2e', () => {
         input,
         lp.encode({ lengthEncoder: int32BEEncode }),
         lp.decode({ lengthDecoder: int32BEDecode }),
-        async (source) => await all(source)
+        async (source) => new Uint8ArrayList(...await all(source))
       )
 
-      expect(res).to.be.eql(input)
+      expect(res.slice()).to.equalBytes(uint8ArrayConcat(input))
     })
   })
 })
