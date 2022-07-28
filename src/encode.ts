@@ -19,18 +19,16 @@ const defaultEncoder: LengthEncoderFunction = (length) => {
 }
 defaultEncoder.bytes = 0
 
-export function encode (options?: EncoderOptions): Transform<Uint8ArrayList | Uint8Array, Uint8ArrayList> {
+export function encode (options?: EncoderOptions): Transform<Uint8ArrayList | Uint8Array, Uint8Array> {
   options = options ?? {}
 
   const encodeLength = options.lengthEncoder ?? defaultEncoder
 
-  const encoder = async function * (source: Source<Uint8ArrayList | Uint8Array>): Source<Uint8ArrayList> {
+  const encoder = async function * (source: Source<Uint8ArrayList | Uint8Array>): Source<Uint8Array> {
     for await (const chunk of source) {
       // length + data
-      yield new Uint8ArrayList(
-        encodeLength(chunk.byteLength),
-        chunk
-      )
+      yield encodeLength(chunk.byteLength).subarray()
+      yield chunk
     }
   }
 
