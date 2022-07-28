@@ -1,3 +1,19 @@
+## [8.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v7.0.1...v8.0.0) (2022-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Uint8Arrays are now yielded instead of Uint8Arrays
+
+### Features
+
+* output Uint8ArrayLists ([#45](https://github.com/alanshaw/it-length-prefixed/issues/45)) ([cbe33da](https://github.com/alanshaw/it-length-prefixed/commit/cbe33dadb1ad62a20dbc11180d596701565e531e))
+
+
+### Dependencies
+
+* **dev:** update aegir and it-pushable ([#44](https://github.com/alanshaw/it-length-prefixed/issues/44)) ([a67205e](https://github.com/alanshaw/it-length-prefixed/commit/a67205e4840d04263f39966717111e0c12baf723))
+
 ### [7.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v7.0.0...v7.0.1) (2022-03-08)
 
 
