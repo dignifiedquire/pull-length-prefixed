@@ -1,3 +1,10 @@
+## [8.0.2](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.1...v8.0.2) (2022-07-30)
+
+
+### Bug Fixes
+
+* emit uint8arrays ([#47](https://github.com/alanshaw/it-length-prefixed/issues/47)) ([6876e97](https://github.com/alanshaw/it-length-prefixed/commit/6876e9711fee3b3c46d91ba0c5c786dd026e0394))
+
 ## [8.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.0...v8.0.1) (2022-07-28)
 
 
