@@ -6,6 +6,7 @@ import { unsigned } from 'uint8-varint'
 import { times, someBytes } from './helpers/index.js'
 import * as lp from '../src/index.js'
 import { int32BEEncode } from './helpers/int32BE-encode.js'
+import { Uint8ArrayList } from 'uint8arraylist'
 
 describe('encode', () => {
   it('should encode length as prefix', async () => {
@@ -62,6 +63,21 @@ describe('encode', () => {
       const length = view.getUint32(0, false)
       expect(length).to.equal(data.length)
       expect(length).to.equal(input[inputIndex].length)
+    }
+  })
+
+  it('should only yield uint8arrays', async () => {
+    const output = await pipe(
+      [new Uint8Array(10), new Uint8ArrayList(new Uint8Array(20))],
+      lp.encode(),
+      async (source) => await all(source)
+    )
+
+    // length, data, length, data
+    expect(output).to.have.lengthOf(4)
+
+    for (let i = 0; i < output.length; i++) {
+      expect(output[i]).to.be.an.instanceOf(Uint8Array)
     }
   })
 })

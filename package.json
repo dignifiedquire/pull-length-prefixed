@@ -173,10 +173,9 @@
   "dependencies": {
     "err-code": "^3.0.1",
     "it-stream-types": "^1.0.4",
-    "uint8-varint": "^1.0.0",
+    "uint8-varint": "^1.0.1",
     "uint8arraylist": "^2.0.0",
-    "uint8arrays": "^3.0.0",
-    "varint": "^6.0.0"
+    "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
     "@types/varint": "^6.0.0",
@@ -191,6 +190,7 @@
     "it-pushable": "^3.0.0",
     "it-reader": "^6.0.1",
     "p-defer": "^4.0.0",
-    "random-int": "^3.0.0"
+    "random-int": "^3.0.0",
+    "varint": "^6.0.0"
   }
 }

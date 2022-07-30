@@ -100,6 +100,7 @@ export function decode (options?: DecoderOptions): Transform<Uint8ArrayList | Ui
           }
 
           const data = buffer.sublist(0, dataLength)
+          buffer.consume(dataLength)
 
           if (options?.onData != null) {
             options.onData(data)
@@ -107,7 +108,6 @@ export function decode (options?: DecoderOptions): Transform<Uint8ArrayList | Ui
 
           yield data
 
-          buffer.consume(dataLength)
           mode = ReadMode.LENGTH
         }
       }

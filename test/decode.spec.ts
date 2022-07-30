@@ -11,6 +11,8 @@ import { times } from './helpers/index.js'
 import * as lp from '../src/index.js'
 import { MAX_LENGTH_LENGTH, MAX_DATA_LENGTH } from '../src/decode.js'
 import { int32BEDecode } from './helpers/int32BE-decode.js'
+import { block } from 'it-block'
+import { unsigned } from 'uint8-varint'
 
 describe('decode', () => {
   it('should decode single message', async () => {
@@ -23,6 +25,25 @@ describe('decode', () => {
     ])
 
     const [output] = await pipe([input], lp.decode(), async (source) => await all(source))
+    expect(output.slice(-byteLength)).to.deep.equal(bytes)
+  })
+
+  it('should decode single message sent in small chunks', async () => {
+    const byteLength = 512
+    const bytes = await randomBytes(byteLength)
+
+    const input = new Uint8ArrayList(
+      unsigned.encode(byteLength),
+      bytes
+    )
+
+    const [output] = await pipe(
+      [input],
+      block(1),
+      lp.decode(),
+      async (source) => await all(source)
+    )
+
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })
 

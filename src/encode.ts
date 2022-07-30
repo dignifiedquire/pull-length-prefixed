@@ -2,6 +2,7 @@ import { Uint8ArrayList } from 'uint8arraylist'
 import { unsigned } from 'uint8-varint'
 import type { LengthEncoderFunction } from './index.js'
 import type { Source, Transform } from 'it-stream-types'
+import { allocUnsafe } from './alloc.js'
 
 interface EncoderOptions {
   lengthEncoder?: LengthEncoderFunction
@@ -9,7 +10,7 @@ interface EncoderOptions {
 
 const defaultEncoder: LengthEncoderFunction = (length) => {
   const lengthLength = unsigned.encodingLength(length)
-  const lengthBuf = new Uint8Array(lengthLength)
+  const lengthBuf = allocUnsafe(lengthLength)
 
   unsigned.encode(length, lengthBuf)
 
@@ -27,8 +28,21 @@ export function encode (options?: EncoderOptions): Transform<Uint8ArrayList | Ui
   const encoder = async function * (source: Source<Uint8ArrayList | Uint8Array>): Source<Uint8Array> {
     for await (const chunk of source) {
       // length + data
-      yield encodeLength(chunk.byteLength).subarray()
-      yield chunk
+      const length = encodeLength(chunk.byteLength)
+
+      // yield only Uint8Arrays
+      if (length instanceof Uint8Array) {
+        yield length
+      } else {
+        yield * length
+      }
+
+      // yield only Uint8Arrays
+      if (chunk instanceof Uint8Array) {
+        yield chunk
+      } else {
+        yield * chunk
+      }
     }
   }
 
