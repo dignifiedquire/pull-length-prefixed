@@ -1,6 +1,6 @@
 {
   "name": "it-length-prefixed",
-  "version": "8.0.2",
+  "version": "8.0.3",
   "description": "Streaming length prefixed buffers with async iterables",
   "author": "Alan Shaw",
   "license": "Apache-2.0 OR MIT",

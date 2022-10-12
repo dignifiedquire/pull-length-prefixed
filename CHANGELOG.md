@@ -1,3 +1,15 @@
+## [8.0.3](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.2...v8.0.3) (2022-10-12)
+
+
+### Dependencies
+
+* update uint8arrays from 3.x.x to 4.x.x ([#49](https://github.com/alanshaw/it-length-prefixed/issues/49)) ([26660ea](https://github.com/alanshaw/it-length-prefixed/commit/26660ea1920ac146cf1397bedc51d7565d7517a3))
+
+
+### Trivial Changes
+
+* update project config ([#50](https://github.com/alanshaw/it-length-prefixed/issues/50)) ([d25997b](https://github.com/alanshaw/it-length-prefixed/commit/d25997bb6690207445980af0e2c103a3f6d9fd5d))
+
 ## [8.0.2](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.1...v8.0.2) (2022-07-30)
 
 
