@@ -25,9 +25,9 @@ describe('encode.single', () => {
 
   it('should encode with custom length encoder (int32BE)', async () => {
     const input = await someBytes()
-    const output = lp.encode.single(input, { lengthEncoder: int32BEEncode })
+    const output = lp.encode.single(input, { lengthEncoder: int32BEEncode }).subarray()
 
-    const view = new DataView(output.slice().buffer)
+    const view = new DataView(output.buffer, output.byteOffset, output.byteLength)
     const length = view.getInt32(0, false)
     expect(length).to.equal(input.length)
   })
