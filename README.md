@@ -1,7 +1,7 @@
 # it-length-prefixed <!-- omit in toc -->
 
 [![codecov](https://img.shields.io/codecov/c/github/alanshaw/it-length-prefixed.svg?style=flat-square)](https://codecov.io/gh/alanshaw/it-length-prefixed)
-[![CI](https://img.shields.io/github/workflow/status/libp2p/js-libp2p-interfaces/test%20&%20maybe%20release/master?style=flat-square)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml)
+[![CI](https://img.shields.io/github/workflow/status/alanshaw/it-length-prefixed/test%20&%20maybe%20release/master?style=flat-square)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml)
 
 > Streaming length prefixed buffers with async iterables
 
@@ -16,7 +16,7 @@
   - [`decode.fromReader(reader, [opts])`](#decodefromreaderreader-opts)
 - [Contribute](#contribute)
 - [License](#license)
-- [Contribution](#contribution)
+- [Contribute](#contribute-1)
 
 ## Install
 
@@ -131,6 +131,6 @@ Licensed under either of
 - Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
 - MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
 
-## Contribution
+## Contribute
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
