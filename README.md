@@ -1,13 +1,14 @@
 # it-length-prefixed <!-- omit in toc -->
 
 [![codecov](https://img.shields.io/codecov/c/github/alanshaw/it-length-prefixed.svg?style=flat-square)](https://codecov.io/gh/alanshaw/it-length-prefixed)
-[![CI](https://img.shields.io/github/workflow/status/alanshaw/it-length-prefixed/test%20&%20maybe%20release/master?style=flat-square)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/alanshaw/it-length-prefixed/js-test-and-release.yml?branch=master\&style=flat-square)](https://github.com/alanshaw/it-length-prefixed/actions/workflows/js-test-and-release.yml?query=branch%3Amaster)
 
 > Streaming length prefixed buffers with async iterables
 
 ## Table of contents <!-- omit in toc -->
 
 - [Install](#install)
+  - [Browser `<script>` tag](#browser-script-tag)
 - [Usage](#usage)
 - [API](#api)
   - [`encode([opts])`](#encodeopts)
@@ -15,13 +16,22 @@
   - [`decode([opts])`](#decodeopts)
   - [`decode.fromReader(reader, [opts])`](#decodefromreaderreader-opts)
 - [Contribute](#contribute)
+- [API Docs](#api-docs)
 - [License](#license)
-- [Contribute](#contribute-1)
+- [Contribution](#contribution)
 
 ## Install
 
 ```console
 $ npm i it-length-prefixed
+```
+
+### Browser `<script>` tag
+
+Loading this module through a script tag will make it's exports available as `ItLengthPrefixed` in the global namespace.
+
+```html
+<script src="https://unpkg.com/it-length-prefixed/dist/index.min.js"></script>
 ```
 
 ## Usage
@@ -124,6 +134,10 @@ Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef5
 
 PRs and issues gladly accepted! Check out the [issues](https://github.com/alanshaw/it-length-prefixed/issues).
 
+## API Docs
+
+- <https://alanshaw.github.io/it-length-prefixed>
+
 ## License
 
 Licensed under either of
@@ -131,6 +145,6 @@ Licensed under either of
 - Apache 2.0, ([LICENSE-APACHE](LICENSE-APACHE) / <http://www.apache.org/licenses/LICENSE-2.0>)
 - MIT ([LICENSE-MIT](LICENSE-MIT) / <http://opensource.org/licenses/MIT>)
 
-## Contribute
+## Contribution
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
