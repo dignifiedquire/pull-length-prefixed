@@ -1,3 +1,10 @@
+## [8.0.4](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.3...v8.0.4) (2022-12-22)
+
+
+### Documentation
+
+* generate typedocs ([#59](https://github.com/alanshaw/it-length-prefixed/issues/59)) ([84ce31d](https://github.com/alanshaw/it-length-prefixed/commit/84ce31d32ce21341a4b231f22daee56aadf32653))
+
 ## [8.0.3](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.2...v8.0.3) (2022-10-12)
 
 
