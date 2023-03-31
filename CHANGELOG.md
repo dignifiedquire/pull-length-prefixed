@@ -1,3 +1,14 @@
+## [9.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.4...v9.0.0) (2023-03-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* a synchronous generator will be returned when a synchronous iterator is passed
+
+### Bug Fixes
+
+* do not create unnecessary async work ([#74](https://github.com/alanshaw/it-length-prefixed/issues/74)) ([e29ab76](https://github.com/alanshaw/it-length-prefixed/commit/e29ab76b7d9637887af7af6e1ed0fd65fa4d971e))
+
 ## [8.0.4](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.3...v8.0.4) (2022-12-22)
 
 
