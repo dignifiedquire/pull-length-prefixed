@@ -15,7 +15,7 @@ describe('decode from reader', () => {
     const stream = reader(
       pipe(
         input,
-        lp.encode()
+        (source) => lp.encode(source)
       )
     )
 
@@ -29,7 +29,7 @@ describe('decode from reader', () => {
 
   it('should not decode a message that is too long', async () => {
     const byteLength = 100 + 1
-    const bytes = await randomBytes(byteLength)
+    const bytes = randomBytes(byteLength)
 
     const input = [
       Uint8Array.from(varint.encode(byteLength)),

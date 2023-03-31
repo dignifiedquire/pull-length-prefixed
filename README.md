@@ -11,9 +11,9 @@
   - [Browser `<script>` tag](#browser-script-tag)
 - [Usage](#usage)
 - [API](#api)
-  - [`encode([opts])`](#encodeopts)
+  - [`encode(source, [opts])`](#encodesource-opts)
   - [`encode.single(chunk, [opts])`](#encodesinglechunk-opts)
-  - [`decode([opts])`](#decodeopts)
+  - [`decode(source, [opts])`](#decodesource-opts)
   - [`decode.fromReader(reader, [opts])`](#decodefromreaderreader-opts)
 - [Contribute](#contribute)
 - [API Docs](#api-docs)
@@ -45,7 +45,7 @@ const encoded = []
 // encode
 await pipe(
   [uint8ArrayFromString('hello world')],
-  lp.encode(),
+  (source) => lp.encode(source),
   async source => {
     for await (const chunk of source) {
       encoded.push(chunk.slice()) // (.slice converts Uint8ArrayList to Uint8Array)
@@ -61,7 +61,7 @@ const decoded = []
 // decode
 await pipe(
   encoded, // e.g. from above
-  lp.decode(),
+  (source) => lp.decode(source),
   async source => {
     for await (const chunk of source) {
       decoded.push(chunk.slice()) // (.slice converts Uint8ArrayList to Uint8Array)
@@ -91,12 +91,13 @@ import {
 } from 'it-length-prefixed/decode'
 ```
 
-### `encode([opts])`
+### `encode(source, [opts])`
 
+- `source: Iterable<Uint8ArrayList | Uint8Array> | AsyncIterable<Uint8ArrayList | Uint8Array>` source to read bytes from
 - `opts: Object`, optional
   - `lengthEncoder: Function`: A function that encodes the length that will prefix each message. By default this is a [`varint`](https://www.npmjs.com/package/varint) encoder. It is passed a `value` to encode, an (optional) `target` buffer to write to and an (optional) `offset` to start writing from. The function should encode the `value` into the `target` (or alloc a new Buffer if not specified), set the `lengthEncoder.bytes` value (the number of bytes written) and return the `target`.
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects. All messages will be prefixed with a length, determined by the `lengthEncoder` function.
+Returns `Generator` or `AsyncGenerator` that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects. All messages will be prefixed with a length, determined by the `lengthEncoder` function.
 
 ### `encode.single(chunk, [opts])`
 
@@ -106,8 +107,9 @@ Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef5
 
 Returns a `Uint8ArrayList` containing the encoded chunk.
 
-### `decode([opts])`
+### `decode(source, [opts])`
 
+- `source: Iterable<Uint8ArrayList | Uint8Array> | AsyncIterable<Uint8ArrayList | Uint8Array>` source to read bytes from
 - `opts: Object`, optional
   - `maxLengthLength`: If provided, will not decode messages whose length section exceeds the size specified, if omitted will use the default of 147 bytes.
   - `maxDataLength`: If provided, will not decode messages whose data section exceeds the size specified, if omitted will use the default of 4MB.
@@ -115,7 +117,7 @@ Returns a `Uint8ArrayList` containing the encoded chunk.
   - `onData(data: Uint8ArrayList)`: Called for every chunk of data that is decoded from the stream
   - `lengthDecoder: Function`: A function that decodes the length that prefixes each message. By default this is a [`varint`](https://www.npmjs.com/package/varint) decoder. It is passed some `data` to decode which is a [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist). The function should decode the length, set the `lengthDecoder.bytes` value (the number of bytes read) and return the length. If the length cannot be decoded, the function should throw a `RangeError`.
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
+Returns `Generator` or `AsyncGenerator` that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
 
 ### `decode.fromReader(reader, [opts])`
 
@@ -128,7 +130,7 @@ Behaves like `decode` except it only reads the exact number of bytes needed for 
   - `onData(data: Uint8ArrayList)`: Called for every chunk of data that is decoded from the stream
   - `lengthEncoder: Function`: See description above.
 
-Returns a [transform](https://gist.github.com/alanshaw/591dc7dd54e4f99338a347ef568d6ee9#transform-it) that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
+Returns `Generator` or `AsyncGenerator` that yields [`Uint8ArrayList`](https://www.npmjs.com/package/uint8arraylist) objects.
 
 ## Contribute
 

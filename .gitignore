@@ -1,6 +1,9 @@
 node_modules
-.coverage
-package-lock.json
+build
 dist
-.clinic
 .docs
+.coverage
+node_modules
+package-lock.json
+yarn.lock
+.vscode

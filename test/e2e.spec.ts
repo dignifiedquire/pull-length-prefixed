@@ -6,7 +6,6 @@ import { pushable } from 'it-pushable'
 import all from 'it-all'
 import map from 'it-map'
 import each from 'it-foreach'
-import type { Source } from 'it-stream-types'
 import { Uint8ArrayList } from 'uint8arraylist'
 import * as lp from '../src/index.js'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
@@ -23,8 +22,8 @@ describe('e2e', () => {
 
     const encoded = await pipe(
       input,
-      lp.encode(),
-      async (source) => new Uint8ArrayList(...await all(source))
+      (source) => lp.encode(source),
+      async (source) => new Uint8ArrayList(...all(source))
     )
 
     const helloLen = varint.encode('hello '.length)
@@ -43,8 +42,8 @@ describe('e2e', () => {
 
     const output = await pipe(
       encoded,
-      lp.decode(),
-      async (source) => new Uint8ArrayList(...await all(source))
+      (source) => lp.decode(source),
+      async (source) => new Uint8ArrayList(...all(source))
     )
 
     expect(output.slice()).to.equalBytes(
@@ -58,10 +57,10 @@ describe('e2e', () => {
       uint8ArrayFromString('world')
     ]
 
-    const encoded = await pipe(
+    const encoded = pipe(
       input,
-      lp.encode(),
-      async (source) => new Uint8ArrayList(...await all(source))
+      (source) => lp.encode(source),
+      (source) => new Uint8ArrayList(...all(source))
     )
 
     const helloLen = varint.encode('hello '.length)
@@ -79,20 +78,20 @@ describe('e2e', () => {
     )
 
     await expect(
-      pipe(encoded, lp.decode({ maxDataLength: 1 }), async (source) => await all(source))
+      pipe(encoded, (source) => lp.decode(source, { maxDataLength: 1 }), async (source) => all(source))
     ).to.eventually.be.rejected.with.property('code', 'ERR_MSG_DATA_TOO_LONG')
   })
 
   it('zero length', async () => {
-    const encoded = await pipe([], lp.encode(), async (source) => await all(source))
+    const encoded = pipe([], (source) => lp.encode(source), (source) => all(source))
 
     expect(encoded).to.be.eql([])
 
-    const decoded = await pipe(
+    const decoded = pipe(
       [new Uint8Array(0), uint8ArrayFromString('more data')],
-      lp.encode(),
-      lp.decode(),
-      async (source) => new Uint8ArrayList(...await all(source))
+      (source) => lp.encode(source),
+      (source) => lp.decode(source),
+      (source) => new Uint8ArrayList(...all(source))
     )
 
     expect(decoded.slice()).to.equalBytes(
@@ -109,7 +108,7 @@ describe('e2e', () => {
     let i = 0
 
     push()
-    function push () {
+    function push (): void {
       setTimeout(() => {
         const val = uint8ArrayFromString(`hello ${i}`)
         p.push(val)
@@ -126,8 +125,8 @@ describe('e2e', () => {
 
     const output = await pipe(
       p,
-      lp.encode(),
-      lp.decode(),
+      (source) => lp.encode(source),
+      (source) => lp.decode(source),
       async (source) => new Uint8ArrayList(...await all(source))
     )
 
@@ -145,12 +144,12 @@ describe('e2e', () => {
       pipe(
         // encode valid input
         input,
-        lp.encode(),
+        (source) => lp.encode(source),
         // corrupt data
         (source) => map(source, data => data.slice(0, -6)),
         // attempt decode
-        lp.decode(),
-        async (source) => await all(source)
+        (source) => lp.decode(source),
+        async (source) => all(source)
       )
     ).to.eventually.be.rejected.with.property('code', 'ERR_UNEXPECTED_EOF')
   })
@@ -169,9 +168,9 @@ describe('e2e', () => {
 
       const res = await pipe(
         input,
-        lp.encode(),
+        (source) => lp.encode(source),
         block(size, { noPad: true }),
-        lp.decode(),
+        (source) => lp.decode(source),
         async (source) => new Uint8ArrayList(...await all(source))
       )
 
@@ -205,8 +204,8 @@ describe('e2e', () => {
       const res = await pipe(
         input,
         (source) => delay(source, 10),
-        lp.encode(),
-        lp.decode(),
+        (source) => lp.encode(source),
+        (source) => lp.decode(source),
         async (source) => new Uint8ArrayList(...await all(source))
       )
 
@@ -216,9 +215,9 @@ describe('e2e', () => {
     it('decode - slow in - fast out', async () => {
       const res = await pipe(
         input,
-        lp.encode(),
+        (source) => lp.encode(source),
         (source) => delay(source, 10),
-        lp.decode(),
+        (source) => lp.decode(source),
         async (source) => new Uint8ArrayList(...await all(source))
       )
 
@@ -226,11 +225,11 @@ describe('e2e', () => {
     })
 
     it('encode/decode with custom length encoder/decoder', async () => {
-      const res = await pipe(
+      const res = pipe(
         input,
-        lp.encode({ lengthEncoder: int32BEEncode }),
-        lp.decode({ lengthDecoder: int32BEDecode }),
-        async (source) => new Uint8ArrayList(...await all(source))
+        (source) => lp.encode(source, { lengthEncoder: int32BEEncode }),
+        (source) => lp.decode(source, { lengthDecoder: int32BEDecode }),
+        (source) => new Uint8ArrayList(...all(source))
       )
 
       expect(res.slice()).to.equalBytes(uint8ArrayConcat(input))
@@ -238,6 +237,6 @@ describe('e2e', () => {
   })
 })
 
-function delay (source: Source<Uint8Array | Uint8ArrayList>, time: number) {
-  return each(source, async () => await new Promise(resolve => setTimeout(resolve, time)))
+function delay (source: Iterable<Uint8Array | Uint8ArrayList>, time: number): AsyncGenerator<Uint8Array | Uint8ArrayList, void, undefined> {
+  return each(source, async () => { await new Promise(resolve => setTimeout(resolve, time)) })
 }

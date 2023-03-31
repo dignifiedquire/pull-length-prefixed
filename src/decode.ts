@@ -5,7 +5,8 @@ import { unsigned } from 'uint8-varint'
 import errCode from 'err-code'
 import type { LengthDecoderFunction } from './index.js'
 import type { Reader } from 'it-reader'
-import type { Source, Transform } from 'it-stream-types'
+import { isAsyncIterable } from './utils.js'
+import type { Source } from 'it-stream-types'
 
 export interface ReadState {
   dataLength: number
@@ -45,87 +46,100 @@ const defaultDecoder: LengthDecoderFunction = (buf) => {
 }
 defaultDecoder.bytes = 0
 
-export function decode (options?: DecoderOptions): Transform<Uint8ArrayList | Uint8Array, Uint8ArrayList> {
-  const decoder = async function * (source: Source<Uint8ArrayList | Uint8Array>): Source<Uint8ArrayList> {
-    const buffer = new Uint8ArrayList()
-    let mode = ReadMode.LENGTH
-    let dataLength = -1
+export function decode (source: Iterable<Uint8ArrayList | Uint8Array>, options?: DecoderOptions): Generator<Uint8ArrayList, void, unknown>
+export function decode (source: Source<Uint8ArrayList | Uint8Array>, options?: DecoderOptions): AsyncGenerator<Uint8ArrayList, void, unknown>
+export function decode (source: Source<Uint8ArrayList | Uint8Array>, options?: DecoderOptions): Generator<Uint8ArrayList, void, unknown> | AsyncGenerator<Uint8ArrayList, void, unknown> {
+  const buffer = new Uint8ArrayList()
+  let mode = ReadMode.LENGTH
+  let dataLength = -1
 
-    const lengthDecoder = options?.lengthDecoder ?? defaultDecoder
-    const maxLengthLength = options?.maxLengthLength ?? MAX_LENGTH_LENGTH
-    const maxDataLength = options?.maxDataLength ?? MAX_DATA_LENGTH
+  const lengthDecoder = options?.lengthDecoder ?? defaultDecoder
+  const maxLengthLength = options?.maxLengthLength ?? MAX_LENGTH_LENGTH
+  const maxDataLength = options?.maxDataLength ?? MAX_DATA_LENGTH
 
-    for await (const buf of source) {
-      buffer.append(buf)
+  function * maybeYield (): Generator<Uint8ArrayList> {
+    while (buffer.byteLength > 0) {
+      if (mode === ReadMode.LENGTH) {
+        // read length, ignore errors for short reads
+        try {
+          dataLength = lengthDecoder(buffer)
 
-      while (buffer.byteLength > 0) {
-        if (mode === ReadMode.LENGTH) {
-          // read length, ignore errors for short reads
-          try {
-            dataLength = lengthDecoder(buffer)
-
-            if (dataLength < 0) {
-              throw errCode(new Error('invalid message length'), 'ERR_INVALID_MSG_LENGTH')
-            }
-
-            if (dataLength > maxDataLength) {
-              throw errCode(new Error('message length too long'), 'ERR_MSG_DATA_TOO_LONG')
-            }
-
-            const dataLengthLength = lengthDecoder.bytes
-            buffer.consume(dataLengthLength)
-
-            if (options?.onLength != null) {
-              options.onLength(dataLength)
-            }
-
-            mode = ReadMode.DATA
-          } catch (err: any) {
-            if (err instanceof RangeError) {
-              if (buffer.byteLength > maxLengthLength) {
-                throw errCode(new Error('message length length too long'), 'ERR_MSG_LENGTH_TOO_LONG')
-              }
-
-              break
-            }
-
-            throw err
+          if (dataLength < 0) {
+            throw errCode(new Error('invalid message length'), 'ERR_INVALID_MSG_LENGTH')
           }
-        }
 
-        if (mode === ReadMode.DATA) {
-          if (buffer.byteLength < dataLength) {
-            // not enough data, wait for more
+          if (dataLength > maxDataLength) {
+            throw errCode(new Error('message length too long'), 'ERR_MSG_DATA_TOO_LONG')
+          }
+
+          const dataLengthLength = lengthDecoder.bytes
+          buffer.consume(dataLengthLength)
+
+          if (options?.onLength != null) {
+            options.onLength(dataLength)
+          }
+
+          mode = ReadMode.DATA
+        } catch (err: any) {
+          if (err instanceof RangeError) {
+            if (buffer.byteLength > maxLengthLength) {
+              throw errCode(new Error('message length length too long'), 'ERR_MSG_LENGTH_TOO_LONG')
+            }
+
             break
           }
 
-          const data = buffer.sublist(0, dataLength)
-          buffer.consume(dataLength)
-
-          if (options?.onData != null) {
-            options.onData(data)
-          }
-
-          yield data
-
-          mode = ReadMode.LENGTH
+          throw err
         }
       }
+
+      if (mode === ReadMode.DATA) {
+        if (buffer.byteLength < dataLength) {
+          // not enough data, wait for more
+          break
+        }
+
+        const data = buffer.sublist(0, dataLength)
+        buffer.consume(dataLength)
+
+        if (options?.onData != null) {
+          options.onData(data)
+        }
+
+        yield data
+
+        mode = ReadMode.LENGTH
+      }
+    }
+  }
+
+  if (isAsyncIterable(source)) {
+    return (async function * () {
+      for await (const buf of source) {
+        buffer.append(buf)
+
+        yield * maybeYield()
+      }
+
+      if (buffer.byteLength > 0) {
+        throw errCode(new Error('unexpected end of input'), 'ERR_UNEXPECTED_EOF')
+      }
+    })()
+  }
+
+  return (function * () {
+    for (const buf of source) {
+      buffer.append(buf)
+
+      yield * maybeYield()
     }
 
     if (buffer.byteLength > 0) {
       throw errCode(new Error('unexpected end of input'), 'ERR_UNEXPECTED_EOF')
     }
-  }
-
-  return decoder
+  })()
 }
 
-/**
- * @param {*} reader
- * @param {import('./types').DecoderOptions} [options]
- * @returns
- */
 decode.fromReader = (reader: Reader, options?: DecoderOptions) => {
   let byteLength = 1 // Read single byte chunks until the length is known
 
@@ -156,9 +170,9 @@ decode.fromReader = (reader: Reader, options?: DecoderOptions) => {
   /**
    * Once the length has been parsed, read chunk for that length
    */
-  const onLength = (l: number) => { byteLength = l }
-  return decode({
+  const onLength = (l: number): void => { byteLength = l }
+  return decode(varByteSource, {
     ...(options ?? {}),
     onLength
-  })(varByteSource)
+  })
 }
