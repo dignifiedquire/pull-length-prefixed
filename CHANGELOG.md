@@ -1,3 +1,10 @@
+## [9.0.1](https://github.com/alanshaw/it-length-prefixed/compare/v9.0.0...v9.0.1) (2023-04-18)
+
+
+### Dependencies
+
+* bump it-stream-types from 1.0.5 to 2.0.1 ([#80](https://github.com/alanshaw/it-length-prefixed/issues/80)) ([3b75441](https://github.com/alanshaw/it-length-prefixed/commit/3b75441aaa5610f9c1d7eb6869c82577555c11d2))
+
 ## [9.0.0](https://github.com/alanshaw/it-length-prefixed/compare/v8.0.4...v9.0.0) (2023-03-31)
 
 
