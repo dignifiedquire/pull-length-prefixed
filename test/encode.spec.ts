@@ -2,7 +2,7 @@ import { expect } from 'aegir/chai'
 import all from 'it-all'
 import { pipe } from 'it-pipe'
 import randomInt from 'random-int'
-import { unsigned } from 'uint8-varint'
+import * as varint from 'uint8-varint'
 import { Uint8ArrayList } from 'uint8arraylist'
 import * as lp from '../src/index.js'
 import { times, someBytes } from './helpers/index.js'
@@ -23,7 +23,7 @@ describe('encode', () => {
       const prefix = output[i]
       const data = output[i + 1]
 
-      const length = unsigned.decode(prefix)
+      const length = varint.decode(prefix)
       expect(length).to.equal(data.length)
       expect(data).to.deep.equal(input[inputIndex])
     }
@@ -39,7 +39,7 @@ describe('encode', () => {
       const prefix = output[i]
       const data = output[i + 1]
 
-      const length = unsigned.decode(prefix)
+      const length = varint.decode(prefix)
       expect(length).to.equal(data.length)
       expect(data).to.deep.equal(input[inputIndex])
     }

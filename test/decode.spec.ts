@@ -5,10 +5,9 @@ import { block } from 'it-block'
 import { pipe } from 'it-pipe'
 import defer from 'p-defer'
 import randomInt from 'random-int'
-import { unsigned } from 'uint8-varint'
+import * as varint from 'uint8-varint'
 import { Uint8ArrayList } from 'uint8arraylist'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
-import varint from 'varint'
 import { MAX_LENGTH_LENGTH, MAX_DATA_LENGTH } from '../src/decode.js'
 import * as lp from '../src/index.js'
 import { times } from './helpers/index.js'
@@ -33,7 +32,7 @@ describe('decode', () => {
     const bytes = randomBytes(byteLength)
 
     const input = new Uint8ArrayList(
-      unsigned.encode(byteLength),
+      varint.encode(byteLength),
       bytes
     )
 

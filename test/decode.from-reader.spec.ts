@@ -5,7 +5,7 @@ import { pipe } from 'it-pipe'
 import { reader } from 'it-reader'
 import { Uint8ArrayList } from 'uint8arraylist'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
-import varint from 'varint'
+import * as varint from 'uint8-varint'
 import * as lp from '../src/index.js'
 import { times, someBytes } from './helpers/index.js'
 

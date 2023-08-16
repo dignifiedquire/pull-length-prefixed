@@ -1,7 +1,7 @@
 /* eslint max-depth: ["error", 6] */
 
 import errCode from 'err-code'
-import { unsigned } from 'uint8-varint'
+import * as varint from 'uint8-varint'
 import { Uint8ArrayList } from 'uint8arraylist'
 import { isAsyncIterable } from './utils.js'
 import type { LengthDecoderFunction } from './index.js'
@@ -39,8 +39,8 @@ enum ReadMode {
 }
 
 const defaultDecoder: LengthDecoderFunction = (buf) => {
-  const length = unsigned.decode(buf)
-  defaultDecoder.bytes = unsigned.encodingLength(length)
+  const length = varint.decode(buf)
+  defaultDecoder.bytes = varint.encodingLength(length)
 
   return length
 }

@@ -1,4 +1,4 @@
-import { unsigned } from 'uint8-varint'
+import * as varint from 'uint8-varint'
 import { Uint8ArrayList } from 'uint8arraylist'
 import { allocUnsafe } from 'uint8arrays/alloc'
 import { isAsyncIterable } from './utils.js'
@@ -10,10 +10,10 @@ interface EncoderOptions {
 }
 
 const defaultEncoder: LengthEncoderFunction = (length) => {
-  const lengthLength = unsigned.encodingLength(length)
+  const lengthLength = varint.encodingLength(length)
   const lengthBuf = allocUnsafe(lengthLength)
 
-  unsigned.encode(length, lengthBuf)
+  varint.encode(length, lengthBuf)
 
   defaultEncoder.bytes = lengthLength
 
