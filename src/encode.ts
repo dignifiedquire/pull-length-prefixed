@@ -1,8 +1,8 @@
-import { Uint8ArrayList } from 'uint8arraylist'
 import { unsigned } from 'uint8-varint'
-import type { LengthEncoderFunction } from './index.js'
+import { Uint8ArrayList } from 'uint8arraylist'
 import { allocUnsafe } from 'uint8arrays/alloc'
 import { isAsyncIterable } from './utils.js'
+import type { LengthEncoderFunction } from './index.js'
 import type { Source } from 'it-stream-types'
 
 interface EncoderOptions {

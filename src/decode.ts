@@ -1,11 +1,11 @@
 /* eslint max-depth: ["error", 6] */
 
-import { Uint8ArrayList } from 'uint8arraylist'
-import { unsigned } from 'uint8-varint'
 import errCode from 'err-code'
+import { unsigned } from 'uint8-varint'
+import { Uint8ArrayList } from 'uint8arraylist'
+import { isAsyncIterable } from './utils.js'
 import type { LengthDecoderFunction } from './index.js'
 import type { Reader } from 'it-reader'
-import { isAsyncIterable } from './utils.js'
 import type { Source } from 'it-stream-types'
 
 export interface ReadState {

@@ -1,12 +1,12 @@
 import { expect } from 'aegir/chai'
+import all from 'it-all'
 import { pipe } from 'it-pipe'
 import randomInt from 'random-int'
-import all from 'it-all'
 import { unsigned } from 'uint8-varint'
-import { times, someBytes } from './helpers/index.js'
-import * as lp from '../src/index.js'
-import { int32BEEncode } from './helpers/int32BE-encode.js'
 import { Uint8ArrayList } from 'uint8arraylist'
+import * as lp from '../src/index.js'
+import { times, someBytes } from './helpers/index.js'
+import { int32BEEncode } from './helpers/int32BE-encode.js'
 
 describe('encode', () => {
   it('should encode length as prefix', async () => {

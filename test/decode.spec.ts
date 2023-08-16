@@ -1,18 +1,18 @@
 import { expect } from 'aegir/chai'
-import { pipe } from 'it-pipe'
-import randomInt from 'random-int'
 import randomBytes from 'iso-random-stream/src/random.js'
 import all from 'it-all'
-import varint from 'varint'
-import { Uint8ArrayList } from 'uint8arraylist'
-import defer from 'p-defer'
-import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
-import { times } from './helpers/index.js'
-import * as lp from '../src/index.js'
-import { MAX_LENGTH_LENGTH, MAX_DATA_LENGTH } from '../src/decode.js'
-import { int32BEDecode } from './helpers/int32BE-decode.js'
 import { block } from 'it-block'
+import { pipe } from 'it-pipe'
+import defer from 'p-defer'
+import randomInt from 'random-int'
 import { unsigned } from 'uint8-varint'
+import { Uint8ArrayList } from 'uint8arraylist'
+import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
+import varint from 'varint'
+import { MAX_LENGTH_LENGTH, MAX_DATA_LENGTH } from '../src/decode.js'
+import * as lp from '../src/index.js'
+import { times } from './helpers/index.js'
+import { int32BEDecode } from './helpers/int32BE-decode.js'
 
 describe('decode', () => {
   it('should decode single message', async () => {
@@ -37,7 +37,7 @@ describe('decode', () => {
       bytes
     )
 
-    const [output] = await pipe([input], block(1), (source) => lp.decode(source), async (source) => await all(source))
+    const [output] = await pipe([input], block(1), (source) => lp.decode(source), async (source) => all(source))
 
     expect(output.slice(-byteLength)).to.deep.equal(bytes)
   })

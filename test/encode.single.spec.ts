@@ -1,7 +1,7 @@
 import { expect } from 'aegir/chai'
 import varint from 'varint'
-import { someBytes } from './helpers/index.js'
 import * as lp from '../src/index.js'
+import { someBytes } from './helpers/index.js'
 import { int32BEEncode } from './helpers/int32BE-encode.js'
 
 describe('encode.single', () => {

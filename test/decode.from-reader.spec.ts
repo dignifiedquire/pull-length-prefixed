@@ -1,13 +1,13 @@
 import { expect } from 'aegir/chai'
-import { pipe } from 'it-pipe'
-import { reader } from 'it-reader'
 import randomBytes from 'iso-random-stream/src/random.js'
 import all from 'it-all'
-import varint from 'varint'
-import { times, someBytes } from './helpers/index.js'
-import * as lp from '../src/index.js'
+import { pipe } from 'it-pipe'
+import { reader } from 'it-reader'
 import { Uint8ArrayList } from 'uint8arraylist'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
+import varint from 'varint'
+import * as lp from '../src/index.js'
+import { times, someBytes } from './helpers/index.js'
 
 describe('decode from reader', () => {
   it('should be able to decode from an it-reader', async () => {
@@ -41,7 +41,7 @@ describe('decode from reader', () => {
     await expect(
       pipe(
         lp.decode.fromReader(stream, { maxDataLength: 100 }),
-        async (source) => await all(source)
+        async (source) => all(source)
       )
     ).to.eventually.be.rejected.with.property('code', 'ERR_MSG_DATA_TOO_LONG')
   })
